@@ -1,9 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffff"
+    android:orientation="vertical"
     tools:context=".Home">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:layout_width="310dp"
+        android:layout_height="295dp"
+        android:layout_gravity="center"
+        android:layout_margin="30dp"
+        android:src="@drawable/logo"></ImageView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="27sp"
+        android:text="Bem -vindo(a) ao Topets"
+        android:textColor="#212121"
+        android:textSize="27sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="370dp"
+        android:layout_height="81dp"
+        android:text="Programe consultas veterinárias, lembretes de medicamentos, histórico de atividades e muito mais!"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:layout_gravity="center" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_margin="32dp"
+        android:background="@drawable/button_background_blue">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cadastrar Pet"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</LinearLayout>
