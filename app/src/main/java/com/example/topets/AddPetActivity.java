@@ -50,8 +50,6 @@ public class AddPetActivity extends AppCompatActivity {
                     public void onDateSet(DatePicker datePicker, int year, int month, int day){
                         if(inputData == null ){return;}
                         inputData.setText(String.valueOf(year)+"."+String.valueOf(month+1)+"."+String.valueOf(day));
-                        //Probably a bad idea to store data directly in the element. Will have to look
-                        //for an alternative method.
                     }
                 },
                 calendar.get(Calendar.YEAR),

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:drawable/editbox_background"
     tools:context=".AddPetActivity">
 
     <LinearLayout
@@ -67,15 +68,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:hint="Data"
-            >
+            android:hint="Data">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputAddPetData"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
-                android:focusable="false"
-                />
+                android:focusable="false" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,18 +107,37 @@
                 android:singleLine="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutAddPetSex"
+
+
+
+        <RadioGroup
+            android:id="@+id/petGenderRadioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:hint="@string/pet_sex">
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
+
+
+            <RadioButton
+                android:id="@+id/petGenderFemale"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:singleLine="true" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginEnd="50sp"
+                android:checked="true"
+                android:text="Fêmea"
+                android:layout_weight="1"
+                />
+
+            <RadioButton
+                android:id="@+id/petGenderMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Macho"
+                android:layout_weight="1"
+                />
+        </RadioGroup>
+
 
     </LinearLayout>
 
