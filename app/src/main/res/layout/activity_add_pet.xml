@@ -62,34 +62,22 @@
                 android:singleLine="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutAddPetData"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/editTextDateAddPetNascimento"
+            android:hint="Data"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputAddPetData"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="20"
-                android:ems="10"
-                android:hint="Data de nascimento"
-                android:inputType="date" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:focusable="false"
+                />
 
-            <ImageButton
-                android:id="@+id/addPetDatePickButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:backgroundTint="#24A9DA"
-                android:contentDescription="Escolha uma data de nascimento"
-                android:padding="20dp"
-
-                android:src="@drawable/calendar_month_icon"
-                app:tint="#FFFFFF" />
-        </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayoutAddPetSpecies"
