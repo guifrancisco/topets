@@ -14,4 +14,11 @@
     <string name="pet_sex">Sexo</string>
 
     <string name="choose_date">Escolher data</string>
+
+    <string name="birth_date">Data de nascimento</string>
+
+    <string name="create">Criar</string>
+
+    <string name="female">Fêmea</string>
+    <string name="male">Macho</string>
 </resources>

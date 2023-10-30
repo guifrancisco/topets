@@ -68,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:hint="Data">
+            android:hint="@string/birth_date">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputAddPetData"
@@ -125,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="50sp"
                 android:checked="true"
-                android:text="Fêmea"
+                android:text="@string/female"
                 android:layout_weight="1"
                 />
 
@@ -133,7 +133,7 @@
                 android:id="@+id/petGenderMale"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Macho"
+                android:text="@string/male"
                 android:layout_weight="1"
                 />
         </RadioGroup>
@@ -147,7 +147,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
         android:backgroundTint="#24A9DA"
-        android:text="Criar"
+        android:text="@string/create"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
