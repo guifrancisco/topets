@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">TOPETS</string>
+
+    <!--  String used in a button to navigate to the pet registration screen  -->
+    <string name="add_pet">Adicionar Pet</string>
+    <string name="add_pet_title">Adicione seu pet</string>
+
+    <string name="welcome">Bem vindo(a)!</string>
+
+    <string name="pet_name_label">Nome</string>
+    <string name="pet_birth_date_label">Data de nascimento</string>
+    <string name="pet_species">Espécie</string>
+    <string name="pet_race">Raça</string>
+    <string name="pet_sex">Sexo</string>
+
+    <string name="choose_date">Escolher data</string>
 </resources>
