@@ -5,13 +5,13 @@ import java.util.UUID;
 
 public class Activity {
     private UUID id;
-    private String nome;
+    private String name;
     private Pet pet;
 
 
-    public Activity(String nome, Pet pet) {
+    public Activity(String name, Pet pet) {
         this.id = UUID.randomUUID();
-        this.nome = nome;
+        this.name = name;
         this.pet = pet;
     }
 
@@ -19,8 +19,8 @@ public class Activity {
         return id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
     public Pet getPet() {
@@ -32,11 +32,11 @@ public class Activity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Activity activity = (Activity) o;
-        return id.equals(activity.id) && nome.equals(activity.nome) && pet.equals(activity.pet);
+        return id.equals(activity.id) && name.equals(activity.name) && pet.equals(activity.pet);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, pet);
+        return Objects.hash(id, name, pet);
     }
 }

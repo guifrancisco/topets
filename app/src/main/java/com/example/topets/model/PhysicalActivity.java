@@ -1,18 +1,17 @@
 package com.example.topets.model;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class PhysicalActivity extends Activity{
-    private String local;
+    private String location;
 
-    public PhysicalActivity(String nome, Pet pet, String local) {
-        super(nome, pet);
-        this.local = local;
+    public PhysicalActivity(String name, Pet pet, String location) {
+        super(name, pet);
+        this.location = location;
     }
 
-    public String getLocal() {
-        return local;
+    public String getLocation() {
+        return location;
     }
 
     @Override
@@ -21,11 +20,11 @@ public class PhysicalActivity extends Activity{
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         PhysicalActivity that = (PhysicalActivity) o;
-        return local.equals(that.local);
+        return location.equals(that.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), local);
+        return Objects.hash(super.hashCode(), location);
     }
 }

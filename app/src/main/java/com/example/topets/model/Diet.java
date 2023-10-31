@@ -6,8 +6,8 @@ public class Diet extends Activity{
     private String ingredients;
     private DietType type;
 
-    public Diet(String nome, Pet pet, String ingredients, DietType type) {
-        super(nome, pet);
+    public Diet(String name, Pet pet, String ingredients, DietType type) {
+        super(name, pet);
         this.ingredients = ingredients;
         this.type = type;
     }
