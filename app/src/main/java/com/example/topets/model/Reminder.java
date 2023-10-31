@@ -11,8 +11,8 @@ public class Reminder {
     private RecurrenceType recurrence;
     private Activity activity;
 
-    public Reminder(UUID id, String content, Date date, RecurrenceType recurrence, Activity activity) {
-        this.id = id;
+    public Reminder(String content, Date date, RecurrenceType recurrence, Activity activity) {
+        this.id = UUID.randomUUID();
         this.content = content;
         this.date = date;
         this.recurrence = recurrence;
