@@ -1,5 +1,7 @@
 package com.example.topets.model;
 
+import com.example.topets.enums.Sex;
+
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;

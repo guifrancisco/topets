@@ -1,4 +1,4 @@
-package com.example.topets.model;
+package com.example.topets.enums;
 
 public enum Sex {
     FEMALE("Fêmea"),MALE("Macho");

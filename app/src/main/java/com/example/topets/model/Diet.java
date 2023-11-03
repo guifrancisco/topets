@@ -1,5 +1,7 @@
 package com.example.topets.model;
 
+import com.example.topets.enums.DietType;
+
 import java.util.Objects;
 
 public class Diet extends Activity{
