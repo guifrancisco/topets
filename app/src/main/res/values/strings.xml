@@ -25,4 +25,5 @@
 
     <string name="edit_pet_title">Perfil do Pet</string>
     <string name="add_pet_picture">Adicionar foto do pet</string>
+    <string name="save">Salvar</string>
 </resources>

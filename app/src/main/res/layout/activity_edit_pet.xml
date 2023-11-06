@@ -43,7 +43,8 @@
                 android:layout_height="100dp"
                 android:src="@drawable/baseline_pets_24"
 
-                tools:srcCompat="@tools:sample/avatars" />
+                tools:srcCompat="@tools:sample/avatars"
+                 />
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
@@ -113,11 +114,12 @@
             android:hint="@string/birth_date">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputAddPetData"
+                android:id="@+id/inputEditPetData"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
-                android:focusable="false" />
+                android:focusable="false"
+                />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -184,12 +186,12 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/saveEditPet"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
         android:backgroundTint="#24A9DA"
-        android:text="@string/add_pet"
+        android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
