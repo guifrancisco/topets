@@ -1,12 +1,11 @@
 package com.example.topets;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
-import android.net.Uri;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
@@ -32,11 +31,9 @@ public class EditPet extends AppCompatActivity {
         inputData = findViewById(R.id.inputEditPetData);
         petImage = findViewById(R.id.petImage);
         loadImageActivityLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(),
-                new ActivityResultCallback<Uri>() {
-                    @Override
-                    public void onActivityResult(Uri o) {
-                        petImage.setImageURI(o);
-                    }
+                o -> {
+                    if(o == null)return;
+                    petImage.setImageURI(o);
                 }
         );
 
