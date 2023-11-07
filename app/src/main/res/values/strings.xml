@@ -22,4 +22,6 @@
 
     <string name="welcome_home">Bem -vindo(a) ao Topets</string>
     <string name="subtitle_home">Programe consultas veterinárias, lembretes de medicamentos, histórico de atividades e muito mais!</string>
+    <string name="medical_appointment_plural">Consultas</string>
+    <string name="create">Criar</string>
 </resources>
