@@ -88,13 +88,16 @@
                 android:id="@+id/checkBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Lembrete" />
+                android:text="Lembrete"
+                android:focusable="false"
+                />
 
             <LinearLayout
                 android:id="@+id/reminderForm"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
+                android:visibility="invisible"
                 >
 
 
