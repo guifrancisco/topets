@@ -122,10 +122,12 @@
                     >
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/dateAppointmentEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Data e hora da consulta"
                         android:singleLine="true"
+                        android:focusable="false"
                         />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
