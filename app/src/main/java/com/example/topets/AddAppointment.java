@@ -21,6 +21,7 @@ public class AddAppointment extends AppCompatActivity {
 
     TextInputEditText dateAppointment;
 
+    final Calendar calendar = Calendar.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +45,6 @@ public class AddAppointment extends AppCompatActivity {
     }
 
     private void openDatePicker(){
-        final Calendar calendar = Calendar.getInstance();
-
         DatePickerDialog dialog = new DatePickerDialog(
                 this,
                 new DatePickerDialog.OnDateSetListener(){
@@ -53,6 +52,9 @@ public class AddAppointment extends AppCompatActivity {
                     public void onDateSet(DatePicker datePicker, int year, int month, int day){
                         if(dateAppointment == null ){return;}
                         dateAppointment.setText(String.valueOf(year)+"."+String.valueOf(month+1)+"."+String.valueOf(day));
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, day);
                     }
                 },
                 calendar.get(Calendar.YEAR),
@@ -60,9 +62,7 @@ public class AddAppointment extends AppCompatActivity {
                 calendar.get(Calendar.DAY_OF_MONTH)
 
         );
-
         dialog.show();
-
     }
 
     private void prepareCheckBox(){
