@@ -12,6 +12,10 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Calendar;
 
+/**
+ * Date picker fragment that displays a date picker dialog and stores it's result. The fragment may also set the text of a
+ * specified TextView element to the value selected by the user.
+ */
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
     private Integer year;
     private Integer month;
