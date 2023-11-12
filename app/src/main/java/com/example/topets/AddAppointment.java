@@ -1,15 +1,20 @@
 package com.example.topets;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.TimePicker;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+
+import com.example.topets.fragments.TimePickerFragment;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;
@@ -19,9 +24,16 @@ public class AddAppointment extends AppCompatActivity {
     LinearLayout reminderForm;
     CheckBox reminderCheckBox;
 
+    TextInputEditText appointmentName;
+    TextInputEditText appointmentLocation;
+    TextInputEditText appointmentDescription;
+    TextInputEditText reminderDescription;
     TextInputEditText dateAppointment;
+    TextInputEditText timeAppointment;
+    Button saveButton;
 
     final Calendar calendar = Calendar.getInstance();
+    TimePickerFragment timePickerFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,11 +41,36 @@ public class AddAppointment extends AppCompatActivity {
 
         reminderForm = findViewById(R.id.reminderForm);
         reminderCheckBox = findViewById(R.id.checkBox);
+        appointmentName = findViewById(R.id.appointmentName);
+        appointmentLocation = findViewById(R.id.appointmentLocation);
+        appointmentDescription = findViewById(R.id.appointmentDescription);
+        reminderDescription = findViewById(R.id.reminderDescription);
         dateAppointment = findViewById(R.id.dateAppointmentEditText);
+        timeAppointment = findViewById(R.id.timeAppointmentEditText);
+        saveButton = findViewById(R.id.button);
+
+        timePickerFragment = new TimePickerFragment(timeAppointment);
 
         prepareCheckBox();
         prepareDatePicker();
+        prepareTimePicker();
     }
+
+    private void prepareTimePicker(){
+        if (this.timeAppointment == null || this.timePickerFragment == null){
+            Log.e("Eror", "Null time edit text on Add appointment screen");
+            return;
+        }
+
+        timeAppointment.setOnClickListener(v -> {
+            openTimePicker();
+        });
+    }
+
+    private void openTimePicker(){
+        this.timePickerFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
     private void prepareDatePicker(){
         if (this.dateAppointment == null){
             Log.e("Error", "Null date edit text on Add Appointment screen.");
