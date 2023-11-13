@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +15,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TOPETS"
         tools:targetApi="31">
+          
+      <activity
+            android:name=".EditAppointment"
+            android:exported="false" />
+      <activity
+            android:name=".AddAppointment"
+            android:exported="false" />
+        <activity
+            android:name=".MedicalAppointmentMenu"
+            android:exported="false" />
+        <activity
+            android:name=".EditPet"
+            android:exported="false" />
+        <activity
+            android:name=".PetsMenu"
+            android:exported="false" />
         <activity
             android:name=".Home"
             android:exported="false" />
@@ -24,6 +43,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+        <activity
+            android:name=".AddPetActivity"
+            android:exported="false" />
 
+        <receiver android:name=".notification.NotificationReceiver"/>
+    </application>
 </manifest>

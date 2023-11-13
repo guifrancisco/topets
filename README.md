@@ -4,3 +4,5 @@ system developed as an evaluation method in the bachelor's degree program in inf
 ## Authors
 
 Igor da Silva Rodrigues
+Guilherme Francisco de Oliveira Almeida
+

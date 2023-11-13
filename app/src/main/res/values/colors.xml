@@ -4,4 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="azul_bg">#24A9DA</color>
     <color name="azul_claro_bg">#D2F0FF</color>
+    <color name="delete_red_outline">#F5D2D7</color>
+    <color name="delete_red_text">#D3455B</color>
 </resources>
