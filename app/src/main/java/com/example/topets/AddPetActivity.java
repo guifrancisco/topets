@@ -38,7 +38,9 @@ public class AddPetActivity extends AppCompatActivity {
 
     private void prepareSaveButton(){
         saveButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, )
+            Intent intent = new Intent(this, PetsMenu.class);
+            startActivity(intent);
+            finish();//disallow backwards navigation to this screen.
         });
     }
 
