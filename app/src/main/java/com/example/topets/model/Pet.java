@@ -59,4 +59,16 @@ public class Pet {
     public int hashCode() {
         return Objects.hash(id, name, birthDate, species, race, sex);
     }
+
+    @Override
+    public String toString() {
+        return "Pet{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", birthDate=" + birthDate +
+                ", species='" + species + '\'' +
+                ", race='" + race + '\'' +
+                ", sex=" + sex +
+                '}';
+    }
 }
