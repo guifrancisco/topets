@@ -12,8 +12,8 @@ public class PaginatedData<T> {
     private int totalElements;
     private int totalPages;
     private int size;
+    private int number;
     private boolean first;
-
     private int numberOfElements;
     private boolean empty;
 
@@ -79,5 +79,13 @@ public class PaginatedData<T> {
      */
     public boolean isEmpty() {
         return empty;
+    }
+
+    /**
+     *
+     * @return the index of the current page.
+     */
+    public int getNumber() {
+        return number;
     }
 }
