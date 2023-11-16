@@ -1,6 +1,7 @@
 package com.example.topets;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,6 +31,8 @@ public class PetsMenu extends AppCompatActivity {
     PetsMenuAdapter adapter;
 
     List<Pet> petList;
+    int currentPage = 0;
+    boolean isLast = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,19 +40,41 @@ public class PetsMenu extends AppCompatActivity {
         petList = new ArrayList<Pet>();
 
         recyclerView = findViewById(R.id.petsRecyclerView);
+        prepareRecyclerView();
 
         //start activity with a clean list
         adapter = new PetsMenuAdapter(this, petList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        findAllPetsAndUpdateView();
+        findAllPetsAndUpdateView(currentPage);
     }
 
-    private void findAllPetsAndUpdateView(){
+    private void prepareRecyclerView(){
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(isLast){return;}//don't query anymore if already in last page.
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == petList.size() - 1) {
+                    //reached bottom of the list
+                    currentPage += 1;
+                    findAllPetsAndUpdateView(currentPage);
+                }
+            }
+        });
+    }
+
+    private void findAllPetsAndUpdateView(int pageNumber){
         String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         
         PetService petService = Connection.getPetService();
-        Call<PaginatedData<Pet>> call = petService.findAllPetsDevice(androidId, null, null);
+        Call<PaginatedData<Pet>> call = petService.findAllPetsDevice(androidId, pageNumber, null);
         call.enqueue(new GetAllPetsCallback(androidId));
     }
 
@@ -63,7 +88,7 @@ public class PetsMenu extends AppCompatActivity {
         public void onResponse(Call<PaginatedData<Pet>> call, Response<PaginatedData<Pet>> response) {
             PaginatedData<Pet> body = response.body();
             List<Pet> updatedPetList = body == null ? Collections.emptyList() : body.getItems();
-
+            isLast = body.isLast();
             Log.i(this.getClass().getSimpleName(), "Adding new Items");
             int itemsAdded = 0;
 
@@ -73,16 +98,9 @@ public class PetsMenu extends AppCompatActivity {
                     itemsAdded += 1;
                 }
             }
-
+            Log.i(this.getClass().getSimpleName(), "Items added: " + itemsAdded);
             Log.i(this.getClass().getSimpleName(), "Notifying recyclerview");
             recyclerView.getAdapter().notifyItemRangeInserted(recyclerView.getAdapter().getItemCount(), itemsAdded);
-
-            if(!body.isLast()){
-                //if this isn't the last page, keep querying the database
-                Connection.getPetService()
-                        .findAllPetsDevice(androidID,body.getNumber()+1, null)
-                        .enqueue(new GetAllPetsCallback(androidID));
-            }
         }
 
         @Override
