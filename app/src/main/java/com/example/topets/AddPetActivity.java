@@ -1,8 +1,10 @@
 package com.example.topets;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,10 +24,24 @@ public class AddPetActivity extends AppCompatActivity {
 
     private TextInputEditText inputData;
 
+    Button saveButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_pet);
+
+        saveButton = findViewById(R.id.saveButton);
+
+        prepareSaveButton();
+    }
+
+    private void prepareSaveButton(){
+        saveButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, PetsMenu.class);
+            startActivity(intent);
+            finish();//disallow backwards navigation to this screen.
+        });
     }
 
     @Override
