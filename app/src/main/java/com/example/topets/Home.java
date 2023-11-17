@@ -20,7 +20,9 @@ public class Home extends AppCompatActivity {
 
     private void prepareButton(){
         registerPetButton.setOnClickListener(v -> {
-            startActivity(new Intent(this, AddPetActivity.class));
+            Intent intent = new Intent(this, AddPetActivity.class);
+            intent.putExtra("callingActivityName", this.getClass().getSimpleName());
+            startActivity(intent);
             finish();//disallow backwards navigation to this screen.
         });
     }

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -17,6 +18,7 @@ import com.example.topets.api.data.PaginatedData;
 import com.example.topets.api.services.PetService;
 import com.example.topets.model.Pet;
 import com.example.topets.model.adapters.PetsMenuAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +31,7 @@ import retrofit2.Response;
 public class PetsMenu extends AppCompatActivity {
     RecyclerView recyclerView;
     PetsMenuAdapter adapter;
-
+    FloatingActionButton addPetButton;
     List<Pet> petList;
     int currentPage = 0;
     boolean isLast = false;
@@ -40,13 +42,24 @@ public class PetsMenu extends AppCompatActivity {
         petList = new ArrayList<Pet>();
 
         recyclerView = findViewById(R.id.petsRecyclerView);
+        addPetButton = findViewById(R.id.floatingActionButton);
+
         prepareRecyclerView();
+        prepareAddPetButton();
 
         //start activity with a clean list
         adapter = new PetsMenuAdapter(this, petList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         findAllPetsAndUpdateView(currentPage);
+    }
+
+    private void prepareAddPetButton(){
+        addPetButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddPetActivity.class);
+            intent.putExtra("callingActivityName", this.getClass().getSimpleName());
+            startActivity(intent);
+        });
     }
 
     private void prepareRecyclerView(){
@@ -72,7 +85,7 @@ public class PetsMenu extends AppCompatActivity {
 
     private void findAllPetsAndUpdateView(int pageNumber){
         String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        
+
         PetService petService = Connection.getPetService();
         Call<PaginatedData<Pet>> call = petService.findAllPetsDevice(androidId, pageNumber, null);
         call.enqueue(new GetAllPetsCallback(androidId));

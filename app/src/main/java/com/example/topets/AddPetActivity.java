@@ -3,6 +3,7 @@ package com.example.topets;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -33,16 +34,40 @@ public class AddPetActivity extends AppCompatActivity {
 
         saveButton = findViewById(R.id.saveButton);
 
+        //this button will send the user to the pets menu screen.
+        //if this activity was called by the pets menu screen, we will finish this activity and
+        //return to it
+        //if this activity was not called by the pets menu screen, we will start a new activity and
+        //finish
         prepareSaveButton();
     }
 
     private void prepareSaveButton(){
         saveButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PetsMenu.class);
-            startActivity(intent);
+
+            String callingActivityName = getIntent().getStringExtra("callingActivityName");
+            Class<? extends AppCompatActivity> targetActivity;
+            switch (callingActivityName){
+                case "Home":
+                    targetActivity = PetsMenu.class; //we came from the Home screen. Start Pets Menu activity
+                    break;
+                case "PetsMenu":
+                    targetActivity = null;//we came from the the Pets menu screem. Finish and return.
+                    break;
+                default:
+                    targetActivity = null;//don't start any activity if we can't determine the caller.
+                    break;
+            }
+
+            if(targetActivity != null){
+                Intent intent = new Intent(this, targetActivity);
+                startActivity(intent);
+            }
             finish();//disallow backwards navigation to this screen.
         });
     }
+
+
 
     @Override
     protected void onResume(){
