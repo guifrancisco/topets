@@ -37,10 +37,13 @@
         tools:layout_gravity="center" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/registerPetButton"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_margin="32dp"
-        android:background="@drawable/button_background_blue">
+        android:background="@drawable/button_background_blue"
+        android:clickable="true"
+        android:focusable="true">
 
         <TextView
             android:id="@+id/textView"

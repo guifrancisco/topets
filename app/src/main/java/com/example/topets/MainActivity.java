@@ -14,13 +14,21 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.topets.api.Connection;
+import com.example.topets.api.data.PaginatedData;
+import com.example.topets.api.services.PetService;
+import com.example.topets.model.Pet;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import java.net.HttpURLConnection;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,14 +42,6 @@ public class MainActivity extends AppCompatActivity {
         registerNotificationChannel();
         registerDevice();
 
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(MainActivity.this, Home.class);
-                startActivity(intent);
-                finish();
-            }
-        }, 3000);
     }
 
     private void registerDevice(){
@@ -52,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
         //sending out async request
         response.enqueue(new DeviceRegistrationCallback());
-
-
     }
 
     private void registerNotificationChannel(){
@@ -83,12 +81,30 @@ public class MainActivity extends AppCompatActivity {
             try(ResponseBody body = response.body()){
                 responseString = body == null ? "no body" : body.string();
                 responseCode = response.code();
-
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             Log.i(this.getClass().getSimpleName(), responseString);
             Log.i(this.getClass().getSimpleName(), String.valueOf(responseCode));
+
+            Class<? extends AppCompatActivity> targetActivity;
+            switch (responseCode){
+                case HttpURLConnection.HTTP_OK:
+                    //device already registered, send to pet menu screen
+                    targetActivity = PetsMenu.class;
+                    break;
+                case HttpURLConnection.HTTP_CREATED:
+                    //device was not registered, send to home screen
+                    targetActivity = Home.class;
+                    break;
+                default:
+                    //unexpected response, abort
+                    Log.e(this.getClass().getSimpleName(), "Unexpected response code: " + responseCode);
+                    finish();
+                    return;
+            }
+            Intent intent = new Intent(MainActivity.this, targetActivity);
+            startActivity(intent);
         }
 
         @Override
@@ -98,6 +114,6 @@ public class MainActivity extends AppCompatActivity {
             String message = t.getMessage();
             Log.e("error", message == null ? "Unknown error": message);
         }
-    }
 
+    }
 }
