@@ -10,7 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import java.sql.Time;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Date picker fragment that displays a date picker dialog and stores it's result. The fragment may also set the text of a
@@ -70,5 +72,19 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     public Integer getDayOfMonth() {
         return dayOfMonth;
+    }
+
+    /**
+     * Returns the selected date as a Date object.
+     * @return a date object.
+     */
+    public Date getDate() {
+        Calendar c = Calendar.getInstance();
+        c.clear();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        return c.getTime();
     }
 }
