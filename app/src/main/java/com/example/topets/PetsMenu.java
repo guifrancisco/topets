@@ -100,7 +100,13 @@ public class PetsMenu extends AppCompatActivity {
         @Override
         public void onResponse(Call<PaginatedData<Pet>> call, Response<PaginatedData<Pet>> response) {
             PaginatedData<Pet> body = response.body();
-            List<Pet> updatedPetList = body == null ? Collections.emptyList() : body.getItems();
+
+            if(body == null){
+                Log.i(this.getClass().getSimpleName(), "No body in API response, ignoring...");
+                return;
+            }
+
+            List<Pet> updatedPetList = body.getItems();
             isLast = body.isLast();
             Log.i(this.getClass().getSimpleName(), "Adding new Items");
             int itemsAdded = 0;
