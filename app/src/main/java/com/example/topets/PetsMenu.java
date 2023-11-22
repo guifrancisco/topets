@@ -1,17 +1,20 @@
 package com.example.topets;
 
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.topets.api.Connection;
 import com.example.topets.api.data.PaginatedData;
@@ -21,7 +24,6 @@ import com.example.topets.model.adapters.PetsMenuAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -35,6 +37,8 @@ public class PetsMenu extends AppCompatActivity {
     List<Pet> petList;
     int currentPage = 0;
     boolean isLast = false;
+
+    ActivityResultLauncher<Intent> addPetActivityLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +48,16 @@ public class PetsMenu extends AppCompatActivity {
         recyclerView = findViewById(R.id.petsRecyclerView);
         addPetButton = findViewById(R.id.floatingActionButton);
 
+        //registering callback for when the AddPetActivity finishes.
+        addPetActivityLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new AddPetActivityResultCallback(this)
+        );
+
         prepareRecyclerView();
         prepareAddPetButton();
+
+
 
         //start activity with a clean list
         adapter = new PetsMenuAdapter(this, petList);
@@ -58,7 +70,9 @@ public class PetsMenu extends AppCompatActivity {
         addPetButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddPetActivity.class);
             intent.putExtra("callingActivityName", this.getClass().getSimpleName());
-            startActivity(intent);
+
+
+            addPetActivityLauncher.launch(intent);
         });
     }
 
@@ -128,6 +142,19 @@ public class PetsMenu extends AppCompatActivity {
             toast.show();
             String message = t.getMessage();
             Log.e("error", message == null ? "Unknown error": message);
+        }
+    }
+
+    class AddPetActivityResultCallback implements ActivityResultCallback<ActivityResult> {
+        PetsMenu context;
+        public AddPetActivityResultCallback(PetsMenu context) {
+            this.context = context;
+        }
+
+        @Override
+        public void onActivityResult(ActivityResult o) {
+            //refreshing recyclerview.
+            context.findAllPetsAndUpdateView(currentPage);
         }
     }
 }
