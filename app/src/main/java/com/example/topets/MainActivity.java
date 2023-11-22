@@ -5,8 +5,6 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,21 +12,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.topets.api.Connection;
-import com.example.topets.api.data.PaginatedData;
-import com.example.topets.api.services.PetService;
-import com.example.topets.model.Pet;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.net.HttpURLConnection;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import java.net.HttpURLConnection;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         //fetching androidID
         String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         Call<ResponseBody> response = Connection.getDeviceService().registerDevice(androidId);
-        DeviceRegistrationCallback callback = new DeviceRegistrationCallback();
 
         //sending out async request
         response.enqueue(new DeviceRegistrationCallback());
