@@ -1,14 +1,12 @@
 package com.example.topets.api.services;
 
 import com.example.topets.api.data.PaginatedData;
+import com.example.topets.api.data.dto.DataRegisterPet;
 import com.example.topets.model.Pet;
-
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -29,5 +27,5 @@ public interface PetService {
     Call<PaginatedData<Pet>> findAllPetsDevice(@Path("deviceId") String deviceId, @Query("page") Integer page, @Query("size") Integer size);
 
     @POST(URL)
-    Call<String> registerPet(Pet pet);
+    Call<ResponseBody> registerPet(@Body DataRegisterPet pet);
 }
