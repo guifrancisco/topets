@@ -1,6 +1,7 @@
 package com.example.topets.model;
 
 import com.example.topets.enums.Sex;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 import java.util.Objects;
@@ -9,6 +10,7 @@ import java.util.UUID;
 public class Pet {
     private UUID id;
     private String name;
+    @SerializedName("dateOfBirth")
     private Date birthDate;
     private String species;
     private String race;
@@ -34,7 +36,6 @@ public class Pet {
     public Date getBirthDate() {
         return birthDate;
     }
-
     public String getSpecies() {
         return species;
     }

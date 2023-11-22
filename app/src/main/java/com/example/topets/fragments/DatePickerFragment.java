@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Date picker fragment that displays a date picker dialog and stores it's result. The fragment may also set the text of a
@@ -70,5 +71,23 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     public Integer getDayOfMonth() {
         return dayOfMonth;
+    }
+
+    /**
+     * Returns the selected date as a Date object.
+     * @return a date object.
+     */
+    public Date getDate() {
+        Calendar c = Calendar.getInstance();
+        c.clear();
+        if (year != null) {c.set(Calendar.YEAR, year);}
+        if(month != null){c.set(Calendar.MONTH, month);}
+        if(dayOfMonth != null){c.set(Calendar.DAY_OF_MONTH, dayOfMonth);}
+
+        return c.getTime();
+    }
+
+    public boolean isEmpty(){
+        return (year == null && month == null && dayOfMonth == null);
     }
 }
