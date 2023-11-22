@@ -1,12 +1,11 @@
 package com.example.topets;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -14,14 +13,21 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.topets.api.Connection;
+import com.example.topets.api.data.dto.DataRegisterPet;
 import com.example.topets.api.services.PetService;
+import com.example.topets.api.util.ResponseHandler;
 import com.example.topets.enums.Sex;
 import com.example.topets.fragments.DatePickerFragment;
 import com.example.topets.model.Pet;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.util.Calendar;
+import java.net.HttpURLConnection;
 import java.util.Date;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Activity that allows for the user to register pets. It contains a greeting title, a form and a
@@ -53,7 +59,7 @@ public class AddPetActivity extends AppCompatActivity {
         inputRace       = findViewById(R.id.inputAddPetRace);
         inputSex        = findViewById(R.id.petGenderRadioGroup);
 
-        datePickerFragment = new DatePickerFragment();
+        datePickerFragment = new DatePickerFragment(inputData);
 
         prepareDatePicker();
 
@@ -67,10 +73,7 @@ public class AddPetActivity extends AppCompatActivity {
 
     private void prepareSaveButton(){
         saveButton.setOnClickListener(v -> {
-
             registerPet();
-
-            //finishAndReturn();
         });
     }
 
@@ -97,33 +100,36 @@ public class AddPetActivity extends AppCompatActivity {
     }
 
     private void registerPet(){
-        try {
-            Pet pet = getPet();
-            PetService petService = Connection.getPetService();
-            petService.registerPet(pet);
-        }catch (IllegalArgumentException e){
-            Log.e(this.getClass().getSimpleName(), e.getMessage());
-            Toast t = Toast.makeText(this, "Um erro ocorreu durante o cadastro.", Toast.LENGTH_LONG);
-            t.show();
-        }
+        String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        Pet pet = getPet();
+
+        if(pet == null){return;}
+
+        PetService petService = Connection.getPetService();
+        Call<ResponseBody> registerCall = petService.registerPet(new DataRegisterPet(pet, androidId));
+        registerCall.enqueue(new PetRegistrationCallback(this));
     }
 
-    private Pet getPet() throws IllegalArgumentException {
+    private Pet getPet(){
         String name = inputName.getText().toString();
         Date birthDate = datePickerFragment.getDate();
         String species = inputSpecies.getText().toString();
         String race = inputRace.getText().toString();
         Sex sex = getSex();
 
+        if(name.isEmpty() || datePickerFragment.isEmpty() || species.isEmpty() || race.isEmpty()){
+            Toast.makeText(this, "Por favor, preencha os campos necessários", Toast.LENGTH_LONG).show();
+            return null;
+        }
+
         return new Pet(name, birthDate, species, race, sex);
     }
 
-    private Sex getSex() throws IllegalArgumentException {
+    private Sex getSex(){
         int radioId = inputSex.getCheckedRadioButtonId();
         RadioButton radioButton = findViewById(radioId);
-        Sex sex = Sex.fromString(radioButton.getText().toString());
-        Log.i(this.getClass().getSimpleName(), "Selected sex was: " + sex);
-        return sex;
+        return Sex.fromString(radioButton.getText().toString());
     }
 
 
@@ -138,5 +144,32 @@ public class AddPetActivity extends AppCompatActivity {
 
     private void openDatePicker(){
         this.datePickerFragment.show(getSupportFragmentManager(), "datePicker");
+    }
+
+    class PetRegistrationCallback implements Callback<ResponseBody>{
+        AddPetActivity context;
+        public PetRegistrationCallback(AddPetActivity context) {
+            this.context = context;
+        }
+
+        @Override
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            int responseCode = response.code();
+            if(responseCode == HttpURLConnection.HTTP_CREATED){
+                Toast t = Toast.makeText(context, "Pet cadastrado com sucesso.", Toast.LENGTH_LONG);
+                t.show();
+                context.finishAndReturn();
+            } else if (!response.isSuccessful()) {
+                ResponseHandler.handleFailure(response);
+            }
+        }
+
+        @Override
+        public void onFailure(Call<ResponseBody> call, Throwable t) {
+            Toast toast = Toast.makeText(context, "Aconexão com a API falhou.", Toast.LENGTH_LONG);
+            toast.show();
+            String message = t.getMessage();
+            Log.e("error", message == null ? "Unknown error": message);
+        }
     }
 }
