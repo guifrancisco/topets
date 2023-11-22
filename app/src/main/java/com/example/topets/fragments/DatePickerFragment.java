@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import java.sql.Time;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -81,10 +80,14 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public Date getDate() {
         Calendar c = Calendar.getInstance();
         c.clear();
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, month);
-        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        if (year != null) {c.set(Calendar.YEAR, year);}
+        if(month != null){c.set(Calendar.MONTH, month);}
+        if(dayOfMonth != null){c.set(Calendar.DAY_OF_MONTH, dayOfMonth);}
 
         return c.getTime();
+    }
+
+    public boolean isEmpty(){
+        return (year == null && month == null && dayOfMonth == null);
     }
 }
