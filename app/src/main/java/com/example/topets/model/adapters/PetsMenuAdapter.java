@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +16,7 @@ import com.example.topets.EditPet;
 import com.example.topets.R;
 import com.example.topets.model.Pet;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class PetsMenuAdapter extends RecyclerView.Adapter<PetsMenuAdapter.RecyclerViewHolder> {
@@ -69,15 +69,19 @@ public class PetsMenuAdapter extends RecyclerView.Adapter<PetsMenuAdapter.Recycl
             itemView.setOnClickListener(v -> navigateToEditPetScreen());
         }
 
+        /**
+         * Launches an activity to start the edit pet screen.
+         */
         private void navigateToEditPetScreen(){
             Intent intent = new Intent(context, EditPet.class);
 
-            intent.putExtra("petId", pet.getId());
+
+            intent.putExtra("petId", pet.getId().toString());
             intent.putExtra("petName", pet.getName());
-            intent.putExtra("petBirthDate", pet.getBirthDate());
+            intent.putExtra("petBirthDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'").format(pet.getBirthDate()));
             intent.putExtra("petSpecies", pet.getSpecies());
             intent.putExtra("petRace", pet.getRace());
-            intent.putExtra("petSex", pet.getSex());
+            intent.putExtra("petSex", pet.getSex().getLabel());
 
             editPetActivityLauncher.launch(intent);
         }

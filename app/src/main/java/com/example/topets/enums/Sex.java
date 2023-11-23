@@ -35,4 +35,8 @@ public enum Sex {
                 throw new RuntimeException(String.format("Illegal enum String constant \"%s\"", this.label));
         }
     }
+
+    public String  getLabel(){
+        return label;
+    }
 }
