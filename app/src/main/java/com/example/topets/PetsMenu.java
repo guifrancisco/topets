@@ -119,12 +119,11 @@ public class PetsMenu extends AppCompatActivity {
     /**
      * Issues a GET request for all pets assuming that one or more pets were altered.
      * This includes adding, removing, or updating pets.
-     * @param pageNumber
      */
-    private void findAllPetsAndUpdateView(int pageNumber){
+    private void findAllPetsAndUpdateView(){
         String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         PetService petService = Connection.getPetService();
-        Call<PaginatedData<Pet>> call = petService.findAllPetsDevice(androidId, pageNumber, null);
+        Call<PaginatedData<Pet>> call = petService.findAllPetsDevice(androidId, 0, null);
         call.enqueue(new GetAllPetsCallbackInvalidateAll(androidId));
     }
 
@@ -183,6 +182,7 @@ public class PetsMenu extends AppCompatActivity {
                 return;
             }
             petList.clear();//clearing old list of pets
+            currentPage = 0;
 
             isLast = body.isLast();
             Log.i(this.getClass().getSimpleName(), "Adding new Items");
@@ -233,7 +233,7 @@ public class PetsMenu extends AppCompatActivity {
 
 
             //refreshing recyclerView.
-            context.findAllPetsAndUpdateView(0);
+            context.findAllPetsAndUpdateView();
 
         }
     }
