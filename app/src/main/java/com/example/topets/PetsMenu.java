@@ -39,6 +39,7 @@ public class PetsMenu extends AppCompatActivity {
     boolean isLast = false;
 
     ActivityResultLauncher<Intent> addPetActivityLauncher;
+    ActivityResultLauncher<Intent> editPetActivityLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,13 +55,19 @@ public class PetsMenu extends AppCompatActivity {
             new AddPetActivityResultCallback(this)
         );
 
+        //registering callback for when editPetActivity finishes
+        editPetActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new EditPetActivityResultCallback(this)
+        );
+
         prepareRecyclerView();
         prepareAddPetButton();
 
 
 
         //start activity with a clean list
-        adapter = new PetsMenuAdapter(this, petList);
+        adapter = new PetsMenuAdapter(this, petList, editPetActivityLauncher);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         findAllPetsAndUpdateView(currentPage);
@@ -157,5 +164,22 @@ public class PetsMenu extends AppCompatActivity {
             context.findAllPetsAndUpdateView(currentPage);
         }
     }
+
+    class EditPetActivityResultCallback implements ActivityResultCallback<ActivityResult>{
+
+        PetsMenu context;
+
+        public EditPetActivityResultCallback(PetsMenu context) {
+            this.context = context;
+        }
+
+
+        @Override
+        public void onActivityResult(ActivityResult o) {
+            //refreshing recyclerView.
+            context.findAllPetsAndUpdateView(currentPage);
+        }
+    }
+
 }
 
