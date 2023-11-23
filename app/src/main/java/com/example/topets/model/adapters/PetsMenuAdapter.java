@@ -1,28 +1,33 @@
 package com.example.topets.model.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.topets.EditPet;
 import com.example.topets.R;
 import com.example.topets.model.Pet;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class PetsMenuAdapter extends RecyclerView.Adapter<PetsMenuAdapter.RecyclerViewHolder> {
     private Context context;
     private List<Pet> petList;
+    private ActivityResultLauncher<Intent> editPetActivityLauncher;
 
-    public PetsMenuAdapter(Context context, List<Pet> petList) {
+    public PetsMenuAdapter(Context context, List<Pet> petList, ActivityResultLauncher<Intent> editPetActivityLauncher) {
         this.context = context;
         this.petList = petList;
+        this.editPetActivityLauncher = editPetActivityLauncher;
     }
 
     @NonNull
@@ -35,7 +40,8 @@ public class PetsMenuAdapter extends RecyclerView.Adapter<PetsMenuAdapter.Recycl
 
     @Override
     public void onBindViewHolder(@NonNull PetsMenuAdapter.RecyclerViewHolder holder, int position) {
-        holder.petName.setText(petList.get(position).getName());
+        holder.setPet(petList.get(position));
+
     }
 
     @Override
@@ -55,6 +61,29 @@ public class PetsMenuAdapter extends RecyclerView.Adapter<PetsMenuAdapter.Recycl
             super(itemView);
             petImage = itemView.findViewById(R.id.petImage);
             petName = itemView.findViewById(R.id.petName);
+        }
+
+        public void setPet(Pet pet) {
+            this.pet = pet;
+            petName.setText(pet.getName());
+            itemView.setOnClickListener(v -> navigateToEditPetScreen());
+        }
+
+        /**
+         * Launches an activity to start the edit pet screen.
+         */
+        private void navigateToEditPetScreen(){
+            Intent intent = new Intent(context, EditPet.class);
+
+
+            intent.putExtra("petId", pet.getId().toString());
+            intent.putExtra("petName", pet.getName());
+            intent.putExtra("petBirthDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'").format(pet.getBirthDate()));
+            intent.putExtra("petSpecies", pet.getSpecies());
+            intent.putExtra("petRace", pet.getRace());
+            intent.putExtra("petSex", pet.getSex().getLabel());
+
+            editPetActivityLauncher.launch(intent);
         }
     }
 }

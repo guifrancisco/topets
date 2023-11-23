@@ -39,6 +39,7 @@ public class PetsMenu extends AppCompatActivity {
     boolean isLast = false;
 
     ActivityResultLauncher<Intent> addPetActivityLauncher;
+    ActivityResultLauncher<Intent> editPetActivityLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,16 +55,22 @@ public class PetsMenu extends AppCompatActivity {
             new AddPetActivityResultCallback(this)
         );
 
+        //registering callback for when editPetActivity finishes
+        editPetActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new EditPetActivityResultCallback(this)
+        );
+
         prepareRecyclerView();
         prepareAddPetButton();
 
 
 
         //start activity with a clean list
-        adapter = new PetsMenuAdapter(this, petList);
+        adapter = new PetsMenuAdapter(this, petList, editPetActivityLauncher);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        findAllPetsAndUpdateView(currentPage);
+        findAllAddedPetsAndUpdateView(currentPage);
     }
 
     private void prepareAddPetButton(){
@@ -91,18 +98,33 @@ public class PetsMenu extends AppCompatActivity {
                 if (layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == petList.size() - 1) {
                     //reached bottom of the list
                     currentPage += 1;
-                    findAllPetsAndUpdateView(currentPage);
+                    findAllAddedPetsAndUpdateView(currentPage);
                 }
             }
         });
     }
 
-    private void findAllPetsAndUpdateView(int pageNumber){
+    /**
+     * Issues a GET request for all pets assuming that one or more pets were added.
+     * @param pageNumber
+     */
+    private void findAllAddedPetsAndUpdateView(int pageNumber){
         String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         PetService petService = Connection.getPetService();
         Call<PaginatedData<Pet>> call = petService.findAllPetsDevice(androidId, pageNumber, null);
         call.enqueue(new GetAllPetsCallback(androidId));
+    }
+
+    /**
+     * Issues a GET request for all pets assuming that one or more pets were altered.
+     * This includes adding, removing, or updating pets.
+     */
+    private void findAllPetsAndUpdateView(){
+        String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        PetService petService = Connection.getPetService();
+        Call<PaginatedData<Pet>> call = petService.findAllPetsDevice(androidId, 0, null);
+        call.enqueue(new GetAllPetsCallbackInvalidateAll(androidId));
     }
 
     class GetAllPetsCallback implements Callback<PaginatedData<Pet>> {
@@ -145,6 +167,42 @@ public class PetsMenu extends AppCompatActivity {
         }
     }
 
+    class GetAllPetsCallbackInvalidateAll implements Callback<PaginatedData<Pet>>{
+
+        String androidId;
+        public GetAllPetsCallbackInvalidateAll(String androidId) {
+            this.androidId = androidId;
+        }
+
+        @Override
+        public void onResponse(Call<PaginatedData<Pet>> call, Response<PaginatedData<Pet>> response) {
+            PaginatedData<Pet> body = response.body();
+            if(body == null){
+                Log.i(this.getClass().getSimpleName(), "No body in API response, ignoring...");
+                return;
+            }
+            petList.clear();//clearing old list of pets
+            currentPage = 0;
+
+            isLast = body.isLast();
+            Log.i(this.getClass().getSimpleName(), "Adding new Items");
+
+            List<Pet> updatedPetList = body.getItems();
+            petList.addAll(updatedPetList);
+            Log.i(this.getClass().getSimpleName(), "Items added: " + updatedPetList.size());
+            Log.i(this.getClass().getSimpleName(), "Notifying recyclerview");
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
+
+        @Override
+        public void onFailure(Call<PaginatedData<Pet>> call, Throwable t) {
+            Toast toast = Toast.makeText(PetsMenu.this, "Algo deu errado durante a consulta de pets", Toast.LENGTH_LONG);
+            toast.show();
+            String message = t.getMessage();
+            Log.e("error", message == null ? "Unknown error": message);
+        }
+    }
+
     class AddPetActivityResultCallback implements ActivityResultCallback<ActivityResult> {
         PetsMenu context;
         public AddPetActivityResultCallback(PetsMenu context) {
@@ -154,8 +212,31 @@ public class PetsMenu extends AppCompatActivity {
         @Override
         public void onActivityResult(ActivityResult o) {
             //refreshing recyclerview.
-            context.findAllPetsAndUpdateView(currentPage);
+            context.findAllAddedPetsAndUpdateView(currentPage);
         }
     }
+
+    class EditPetActivityResultCallback implements ActivityResultCallback<ActivityResult>{
+
+        PetsMenu context;
+
+        public EditPetActivityResultCallback(PetsMenu context) {
+            this.context = context;
+        }
+
+
+        @Override
+        public void onActivityResult(ActivityResult o) {
+            Intent resultIntent = o.getData();
+            boolean isSuccess = resultIntent != null && resultIntent.getBooleanExtra("isSuccess", false);
+            if(!isSuccess){return;}
+
+
+            //refreshing recyclerView.
+            context.findAllPetsAndUpdateView();
+
+        }
+    }
+
 }
 

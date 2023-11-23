@@ -1,8 +1,12 @@
 package com.example.topets.model;
 
+import android.util.Log;
+
 import com.example.topets.enums.Sex;
 import com.google.gson.annotations.SerializedName;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
@@ -23,6 +27,16 @@ public class Pet {
         this.species = species;
         this.race = race;
         this.sex = sex;
+    }
+
+    public Pet(String id, String name, String birthDate, String species, String race, String sex) throws ParseException {
+        Log.i(this.getClass().getSimpleName(), "id is " + id);
+        this.id = UUID.fromString(id);
+        this.name = name;
+        this.birthDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'").parse(birthDate);
+        this.species = species;
+        this.race = race;
+        this.sex = Sex.fromString(sex);
     }
 
     public UUID getId() {

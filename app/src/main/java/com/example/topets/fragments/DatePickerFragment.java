@@ -52,6 +52,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        setDateAndUpdateView(year, month, dayOfMonth);
+    }
+
+    private void setDateAndUpdateView(int year, int month, int dayOfMonth){
         this.year = year;
         this.month = month;
         this.dayOfMonth = dayOfMonth;
@@ -59,6 +63,18 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         if(element != null){
             element.setText(dayOfMonth+"/"+(month+1)+"/"+year);
         }
+    }
+
+
+    public void setDate(Date date){
+        Calendar c = Calendar.getInstance();
+        c.clear();
+        c.setTime(date);
+        setDateAndUpdateView(
+            c.get(Calendar.YEAR),
+            c.get(Calendar.MONTH),
+            c.get(Calendar.DAY_OF_MONTH)
+        );
     }
 
     public Integer getYear() {

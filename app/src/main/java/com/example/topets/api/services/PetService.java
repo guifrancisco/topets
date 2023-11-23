@@ -2,6 +2,7 @@ package com.example.topets.api.services;
 
 import com.example.topets.api.data.PaginatedData;
 import com.example.topets.api.data.dto.DataRegisterPet;
+import com.example.topets.api.data.dto.DataUpdatePet;
 import com.example.topets.model.Pet;
 
 import okhttp3.ResponseBody;
@@ -9,6 +10,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -28,4 +30,7 @@ public interface PetService {
 
     @POST(URL)
     Call<ResponseBody> registerPet(@Body DataRegisterPet pet);
+
+    @PUT(URL+"/{id}")
+    Call<ResponseBody> updatePet(@Path("id") String id, @Body DataUpdatePet dataUpdatePet);
 }
