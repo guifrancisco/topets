@@ -2,6 +2,7 @@ package com.example.topets.model.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.topets.Menu;
 import com.example.topets.R;
 import com.example.topets.model.Pet;
+import com.example.topets.system.ImageHandler;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -67,6 +69,13 @@ public class PetsMenuAdapter extends RecyclerView.Adapter<PetsMenuAdapter.Recycl
             this.pet = pet;
             petName.setText(pet.getName());
             itemView.setOnClickListener(v -> navigateToMenu());
+
+            //setting profile image
+            Uri imageUri = ImageHandler.getProfileUriFromPetId(pet.getId().toString(), context);
+            if(imageUri != null){
+                petImage.setImageURI(null);//clearing annyoing image cache...
+                petImage.setImageURI(imageUri);
+            }
         }
 
         /**
