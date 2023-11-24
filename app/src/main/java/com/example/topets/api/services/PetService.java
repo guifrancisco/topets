@@ -33,4 +33,7 @@ public interface PetService {
 
     @PUT(URL+"/{id}")
     Call<ResponseBody> updatePet(@Path("id") String id, @Body DataUpdatePet dataUpdatePet);
+
+    @GET(URL+"/{deviceId}/{petId}")
+    Call<Pet> getPetById(@Path("deviceId") String deviceId, @Path("petId") String petId);
 }
