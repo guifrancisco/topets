@@ -1,11 +1,13 @@
 package com.example.topets;
 
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -24,9 +26,12 @@ import com.example.topets.enums.OperationType;
 import com.example.topets.enums.Sex;
 import com.example.topets.fragments.DatePickerFragment;
 import com.example.topets.model.Pet;
+import com.example.topets.system.ImageHandler;
 import com.google.android.material.textfield.TextInputEditText;
 
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -54,7 +59,7 @@ public class EditPet extends AppCompatActivity {
      * Activity launcher for getting an image from the user to use as profile picture.
      */
     private ActivityResultLauncher<String> loadImageActivityLauncher;
-
+    private Uri selectedPetImage;
     DatePickerFragment datePickerFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +77,9 @@ public class EditPet extends AppCompatActivity {
 
         saveButton = findViewById(R.id.saveEditPet);
 
-        loadImageActivityLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(),
-                o -> {
-                    if(o == null)return;
-                    petImage.setImageURI(o);
-                }
+        loadImageActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                new SetImageActivityCallback(this)
         );
 
         datePickerFragment = new DatePickerFragment(inputData);
@@ -85,6 +88,7 @@ public class EditPet extends AppCompatActivity {
         setupImageInput();
         setupSaveButton();
         restorePet();
+        updateImage();
     }
 
     private void setupSaveButton(){
@@ -137,9 +141,6 @@ public class EditPet extends AppCompatActivity {
         Call<Pet> call = petService.getPetById(androidId, petId);
         call.enqueue(new GetPetByIdCallback(this));
 
-
-
-
     }
 
     private void setSexSelection(Sex s){
@@ -171,6 +172,20 @@ public class EditPet extends AppCompatActivity {
         });
     }
 
+    /**
+     * Sets the profile image to the one saved in storage. This image can be overwritten when
+     * previewing other images before applying the changes by pressing the save button.
+     */
+    private void updateImage(){
+        Intent callingIntent = getIntent();
+        String petId = callingIntent.getStringExtra("petId");
+        Uri imageUri = ImageHandler.getProfileUriFromPetId(petId, this);
+        if(imageUri == null){return;}
+        Log.i(this.getClass().getSimpleName(), "Setting image file as "+imageUri.toString());
+        petImage.setImageURI(null);//clearing annoying image cache.
+        petImage.setImageURI(imageUri);
+    }
+
     private void openDatePicker(){
         this.datePickerFragment.show(getSupportFragmentManager(), "datePicker");
     }
@@ -186,6 +201,11 @@ public class EditPet extends AppCompatActivity {
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             int responseCode = response.code();
             if(responseCode == HttpURLConnection.HTTP_OK){
+                //copying previewed image to storage
+                //the new image will have the name of the id of the pet.
+                //all other screens will try to read this new file for the pet image.
+                ImageHandler.copyImageToAppStorage(selectedPetImage, context, pet.getId()+".jpg");
+
                 Toast.makeText(context, "Pet atualizado com sucesso", Toast.LENGTH_LONG).show();
 
                 //setting result.
@@ -242,5 +262,22 @@ public class EditPet extends AppCompatActivity {
             String message = t.getMessage();
             Log.e("error", message == null ? "Unknown error": message);
         }
+    }
+    class SetImageActivityCallback implements ActivityResultCallback<Uri>{
+        private Context context;
+
+        public SetImageActivityCallback(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public void onActivityResult(Uri o) {
+            if(o == null)return;
+            //setting image for preview.
+            selectedPetImage = o;
+            petImage.setImageURI(selectedPetImage);
+        }
+
+
     }
 }

@@ -76,7 +76,7 @@ public class Menu extends AppCompatActivity {
 
             //the pets menu screen needs to know what type of operation was done to know how to
             //effectively update the list.
-            Log.e(this.getClass().getSimpleName(), "sending operation type: " + activityResultIntent.getStringExtra("operationType"));
+            Log.i(this.getClass().getSimpleName(), "sending operation type: " + activityResultIntent.getStringExtra("operationType"));
             resultIntent.putExtra("operationType", activityResultIntent.getStringExtra("operationType"));
             setResult(RESULT_OK, resultIntent);
         }
