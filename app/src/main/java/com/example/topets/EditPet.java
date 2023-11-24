@@ -204,7 +204,9 @@ public class EditPet extends AppCompatActivity {
                 //copying previewed image to storage
                 //the new image will have the name of the id of the pet.
                 //all other screens will try to read this new file for the pet image.
-                ImageHandler.copyImageToAppStorage(selectedPetImage, context, pet.getId()+".jpg");
+                if(selectedPetImage != null){
+                    ImageHandler.copyImageToAppStorage(selectedPetImage, context, pet.getId()+".jpg");
+                }
 
                 Toast.makeText(context, "Pet atualizado com sucesso", Toast.LENGTH_LONG).show();
 
