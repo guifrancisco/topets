@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.topets.api.Connection;
 import com.example.topets.api.data.PaginatedData;
 import com.example.topets.api.services.PetService;
+import com.example.topets.enums.OperationType;
 import com.example.topets.model.Pet;
 import com.example.topets.model.adapters.PetsMenuAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -39,7 +40,7 @@ public class PetsMenu extends AppCompatActivity {
     boolean isLast = false;
 
     ActivityResultLauncher<Intent> addPetActivityLauncher;
-    ActivityResultLauncher<Intent> editPetActivityLauncher;
+    ActivityResultLauncher<Intent> menuActivityLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +56,10 @@ public class PetsMenu extends AppCompatActivity {
             new AddPetActivityResultCallback(this)
         );
 
-        //registering callback for when editPetActivity finishes
-        editPetActivityLauncher = registerForActivityResult(
+        //registering callback for when menuActivity finishes
+        menuActivityLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                new EditPetActivityResultCallback(this)
+                new MenuActivityResultCallback(this)
         );
 
         prepareRecyclerView();
@@ -67,7 +68,7 @@ public class PetsMenu extends AppCompatActivity {
 
 
         //start activity with a clean list
-        adapter = new PetsMenuAdapter(this, petList, editPetActivityLauncher);
+        adapter = new PetsMenuAdapter(this, petList, menuActivityLauncher);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         findAllAddedPetsAndUpdateView(currentPage);
@@ -216,11 +217,11 @@ public class PetsMenu extends AppCompatActivity {
         }
     }
 
-    class EditPetActivityResultCallback implements ActivityResultCallback<ActivityResult>{
+    class MenuActivityResultCallback implements ActivityResultCallback<ActivityResult>{
 
         PetsMenu context;
 
-        public EditPetActivityResultCallback(PetsMenu context) {
+        public MenuActivityResultCallback(PetsMenu context) {
             this.context = context;
         }
 
@@ -228,12 +229,25 @@ public class PetsMenu extends AppCompatActivity {
         @Override
         public void onActivityResult(ActivityResult o) {
             Intent resultIntent = o.getData();
-            boolean isSuccess = resultIntent != null && resultIntent.getBooleanExtra("isSuccess", false);
-            if(!isSuccess){return;}
+            if(resultIntent == null){
+                Log.e(this.getClass().getSimpleName(), "Null result from intent");
+                return;
+            }
 
+            String opString = resultIntent.getStringExtra("operationType");
+            if(opString == null){
+                Log.e(this.getClass().getSimpleName(), "Null string extra from intent");
+                return;
+            }
 
-            //refreshing recyclerView.
-            context.findAllPetsAndUpdateView();
+            OperationType op = OperationType.fromString(opString);
+
+            switch (op){
+                case UPDATE:
+                    //refreshing recyclerView.
+                    context.findAllPetsAndUpdateView();
+                    break;
+            }
 
         }
     }

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import com.example.topets.api.Connection;
 import com.example.topets.api.data.dto.DataUpdatePet;
 import com.example.topets.api.services.PetService;
 import com.example.topets.api.util.ResponseHandler;
+import com.example.topets.enums.OperationType;
 import com.example.topets.enums.Sex;
 import com.example.topets.fragments.DatePickerFragment;
 import com.example.topets.model.Pet;
@@ -127,29 +129,16 @@ public class EditPet extends AppCompatActivity {
      */
     private void restorePet(){
         Intent callingIntent = getIntent();
-        try{
-            pet = new Pet(
-                callingIntent.getStringExtra("petId"),
-                callingIntent.getStringExtra("petName"),
-                callingIntent.getStringExtra("petBirthDate"),
-                callingIntent.getStringExtra("petSpecies"),
-                callingIntent.getStringExtra("petRace"),
-                callingIntent.getStringExtra("petSex")
-            );
+        String petId = callingIntent.getStringExtra("petId");
+        String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        //getting pet from api
+        PetService petService = Connection.getPetService();
+        Call<Pet> call = petService.getPetById(androidId, petId);
+        call.enqueue(new GetPetByIdCallback(this));
 
 
-            inputName.setText(pet.getName());
-            datePickerFragment.setDate(pet.getBirthDate());
-            inputSpecies.setText(pet.getSpecies());
-            inputRace.setText(pet.getRace());
-            setSexSelection(pet.getSex());
 
-        }catch (ParseException e){
-            Log.e(this.getClass().getSimpleName(), "Badly formatted string: " + callingIntent.getStringExtra("petBirthDate"));
-            Log.e(this.getClass().getSimpleName(), Arrays.toString(e.getStackTrace()));
-            Toast.makeText(this, "Um erro ocorreu ao resgatar informações do pet", Toast.LENGTH_LONG).show();
-            finish();
-        }
 
     }
 
@@ -202,6 +191,7 @@ public class EditPet extends AppCompatActivity {
                 //setting result.
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("isSuccess", true);
+                resultIntent.putExtra("operationType", OperationType.UPDATE.getLabel());
                 setResult(RESULT_OK, resultIntent);
                 finish();
             }else if(!response.isSuccessful()){
@@ -219,4 +209,38 @@ public class EditPet extends AppCompatActivity {
         }
     }
 
+    class GetPetByIdCallback implements Callback<Pet>{
+        Context context;
+        public GetPetByIdCallback(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public void onResponse(Call<Pet> call, Response<Pet> response) {
+            int responseCode = response.code();
+            if(responseCode == HttpURLConnection.HTTP_OK){
+                //👍
+                pet = response.body();
+                inputName.setText(pet.getName());
+                datePickerFragment.setDate(pet.getBirthDate());
+                inputSpecies.setText(pet.getSpecies());
+                inputRace.setText(pet.getRace());
+                setSexSelection(pet.getSex());
+            }else{
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("isSuccess", false);
+                setResult(RESULT_CANCELED, resultIntent);
+                Log.e(this.getClass().getSimpleName(), "Unable to fetch pet information, aborting...");
+                finish();
+            }
+        }
+
+        @Override
+        public void onFailure(Call<Pet> call, Throwable t) {
+            Toast toast = Toast.makeText(context, "Aconexão com a API falhou.", Toast.LENGTH_LONG);
+            toast.show();
+            String message = t.getMessage();
+            Log.e("error", message == null ? "Unknown error": message);
+        }
+    }
 }

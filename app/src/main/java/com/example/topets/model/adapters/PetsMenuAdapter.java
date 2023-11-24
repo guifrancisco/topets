@@ -12,7 +12,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.topets.EditPet;
+import com.example.topets.Menu;
 import com.example.topets.R;
 import com.example.topets.model.Pet;
 
@@ -22,12 +22,12 @@ import java.util.List;
 public class PetsMenuAdapter extends RecyclerView.Adapter<PetsMenuAdapter.RecyclerViewHolder> {
     private Context context;
     private List<Pet> petList;
-    private ActivityResultLauncher<Intent> editPetActivityLauncher;
+    private ActivityResultLauncher<Intent> menuActivityLauncher;
 
-    public PetsMenuAdapter(Context context, List<Pet> petList, ActivityResultLauncher<Intent> editPetActivityLauncher) {
+    public PetsMenuAdapter(Context context, List<Pet> petList, ActivityResultLauncher<Intent> menuActivityLauncher) {
         this.context = context;
         this.petList = petList;
-        this.editPetActivityLauncher = editPetActivityLauncher;
+        this.menuActivityLauncher = menuActivityLauncher;
     }
 
     @NonNull
@@ -66,24 +66,16 @@ public class PetsMenuAdapter extends RecyclerView.Adapter<PetsMenuAdapter.Recycl
         public void setPet(Pet pet) {
             this.pet = pet;
             petName.setText(pet.getName());
-            itemView.setOnClickListener(v -> navigateToEditPetScreen());
+            itemView.setOnClickListener(v -> navigateToMenu());
         }
 
         /**
-         * Launches an activity to start the edit pet screen.
+         * Launches an activity to start the menu screen.
          */
-        private void navigateToEditPetScreen(){
-            Intent intent = new Intent(context, EditPet.class);
-
-
+        private void navigateToMenu(){
+            Intent intent = new Intent(context, Menu.class);
             intent.putExtra("petId", pet.getId().toString());
-            intent.putExtra("petName", pet.getName());
-            intent.putExtra("petBirthDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'").format(pet.getBirthDate()));
-            intent.putExtra("petSpecies", pet.getSpecies());
-            intent.putExtra("petRace", pet.getRace());
-            intent.putExtra("petSex", pet.getSex().getLabel());
-
-            editPetActivityLauncher.launch(intent);
+            menuActivityLauncher.launch(intent);
         }
     }
 }
