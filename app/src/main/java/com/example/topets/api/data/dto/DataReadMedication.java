@@ -1,5 +1,7 @@
 package com.example.topets.api.data.dto;
 
+import java.util.Objects;
+
 public class DataReadMedication {
     String id;
     String name;
@@ -21,6 +23,19 @@ public class DataReadMedication {
 
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DataReadMedication that = (DataReadMedication) o;
+        return id.equals(that.id) && name.equals(that.name) && Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description);
     }
 
     @Override

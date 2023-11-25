@@ -59,7 +59,7 @@ public class MedicationMenu extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 new AddMedicationActivityResultCallback(this)
         );
-        
+
         restorePetId();
 
         prepareRecyclerView();
@@ -69,6 +69,10 @@ public class MedicationMenu extends AppCompatActivity {
     }
 
     private void prepareAddMedicationButton() {
+        addMedicationButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddMedication.class);
+            addMedicationActivityLauncher.launch(intent);
+        });
     }
 
     private void restorePetId() {
