@@ -1,7 +1,7 @@
 package com.example.topets.api.services;
 
 import com.example.topets.api.data.PaginatedData;
-import com.example.topets.api.data.dto.DataReadMedicine;
+import com.example.topets.api.data.dto.DataReadMedication;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -12,6 +12,6 @@ public interface MedicationService {
     String URL = "v1/medicine";
 
     @GET(URL+"/{petId}")
-    Call<PaginatedData<DataReadMedicine>> findAllMedicineByPetId(@Path("petId") String petId, @Query("page") Integer page, @Query("size") Integer size);
+    Call<PaginatedData<DataReadMedication>> findAllMedicineByPetId(@Path("petId") String petId, @Query("page") Integer page, @Query("size") Integer size);
 
 }
