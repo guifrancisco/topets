@@ -88,4 +88,19 @@ public class PaginatedData<T> {
     public int getNumber() {
         return number;
     }
+
+    @Override
+    public String toString() {
+        return "PaginatedData{" +
+                "items=" + items +
+                ", last=" + last +
+                ", totalElements=" + totalElements +
+                ", totalPages=" + totalPages +
+                ", size=" + size +
+                ", number=" + number +
+                ", first=" + first +
+                ", numberOfElements=" + numberOfElements +
+                ", empty=" + empty +
+                '}';
+    }
 }

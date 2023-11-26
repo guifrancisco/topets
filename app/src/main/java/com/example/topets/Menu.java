@@ -14,8 +14,11 @@ import android.widget.ImageView;
 
 import com.example.topets.enums.OperationType;
 
+import java.util.Locale;
+
 public class Menu extends AppCompatActivity {
     CardView petProfileButton;
+    CardView medicationButton;
     private String petId;
 
     ActivityResultLauncher<Intent> editPetLauncher;
@@ -26,7 +29,7 @@ public class Menu extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
 
         petProfileButton = findViewById(R.id.petProfileButton);
-
+        medicationButton = findViewById(R.id.medicationButton);
         //registering callback for when the edit pet screen finishes
         editPetLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -41,6 +44,21 @@ public class Menu extends AppCompatActivity {
 
         restorePet();
         preparePetsMenuButton();
+        prepareMedicationButton();
+    }
+
+    private void prepareMedicationButton(){
+        this.medicationButton.setOnClickListener(v -> {
+            navigateToMedicationMenuScreen();
+        });
+    }
+
+    private void navigateToMedicationMenuScreen(){
+        Intent intent = new Intent(this, MedicationMenu.class);
+        intent.putExtra("petId", petId);
+        //starting an activity for result will probably not be necessary, as we won't have to update
+        //the pets menu screen based on any changes to medications.
+        startActivity(intent);
     }
 
     private void preparePetsMenuButton(){
