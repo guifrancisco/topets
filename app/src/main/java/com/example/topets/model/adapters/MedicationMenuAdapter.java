@@ -20,7 +20,7 @@ import java.util.List;
 public class MedicationMenuAdapter extends RecyclerView.Adapter<MedicationMenuAdapter.RecyclerViewHolder>{
     private Context context;
     private List<DataReadMedication> medicationList;
-    //TODO: Activity Launcher for medication profile
+
     private ActivityResultLauncher<Intent> editMedicationLauncher;
 
     public MedicationMenuAdapter(Context context, List<DataReadMedication> medicationList, ActivityResultLauncher<Intent> editMedicationLauncher) {
