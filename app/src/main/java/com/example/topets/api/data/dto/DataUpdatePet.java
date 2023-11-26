@@ -1,6 +1,7 @@
 package com.example.topets.api.data.dto;
 
 import com.example.topets.model.Pet;
+import com.google.gson.annotations.SerializedName;
 
 import java.text.SimpleDateFormat;
 
@@ -9,6 +10,7 @@ public class DataUpdatePet {
     String dateOfBirth;
     String species;
     String breed;
+    @SerializedName("sexEnum")
     String sex;
 
     public DataUpdatePet(Pet pet){

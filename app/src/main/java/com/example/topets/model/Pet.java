@@ -18,6 +18,7 @@ public class Pet {
     private Date birthDate;
     private String species;
     private String race;
+    @SerializedName("sexEnum")
     private Sex sex;
 
     public Pet(String name, Date birthDate, String species, String race, Sex sex) {
