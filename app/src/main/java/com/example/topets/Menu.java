@@ -10,6 +10,7 @@ import androidx.cardview.widget.CardView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.example.topets.enums.OperationType;
 
@@ -31,6 +32,12 @@ public class Menu extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 new EditPetActivityResultCallback()
         );
+
+        ImageView returnToPetsButton = findViewById(R.id.returnToPetsButton);
+        returnToPetsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, PetsMenu.class);
+            startActivity(intent);
+        });
 
         restorePet();
         preparePetsMenuButton();
