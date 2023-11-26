@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -65,6 +66,11 @@ public class EditPet extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_pet);
+
+        ImageButton returnToMenu = findViewById(R.id.returnToMenu);
+        returnToMenu.setOnClickListener(v -> {
+            finish();
+        });
 
 
         inputData = findViewById(R.id.inputEditPetData);
