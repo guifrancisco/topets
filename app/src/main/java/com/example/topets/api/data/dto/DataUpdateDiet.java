@@ -13,7 +13,7 @@ public class DataUpdateDiet {
     DataUpdateDietDetails dataUpdateDietDetails;
     DataUpdateReminder dataUpdateReminder;
 
-    public DataUpdateDiet(String name, Boolean deleteReminder, String type, String description, DataUpdateReminder dataUpdateReminder) {
+    public DataUpdateDiet(String name, Boolean deleteReminder, String type, String description) {
         this.dataUpdateActivity = new DataUpdateActivity(name, deleteReminder);
         this.dataUpdateDietDetails = new DataUpdateDietDetails(type, description);
     }

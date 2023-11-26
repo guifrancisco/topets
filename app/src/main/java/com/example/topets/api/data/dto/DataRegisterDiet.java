@@ -14,7 +14,7 @@ public class DataRegisterDiet {
 
     DataRegisterReminder dataRegisterReminder;
 
-    public DataRegisterDiet(String name, String deviceId, String petId, String type, String description, DataRegisterReminder dataRegisterReminder) {
+    public DataRegisterDiet(String name, String deviceId, String petId, String type, String description) {
         this.dataRegisterActivity = new DataRegisterActivity(name, deviceId, petId);
         this.dataRegisterDietDetails = new DataRegisterDietDetails(type, description);
     }
@@ -31,5 +31,22 @@ public class DataRegisterDiet {
             this.type = type;
             this.description = description;
         }
+
+        @Override
+        public String toString() {
+            return "DataRegisterDietDetails{" +
+                    "type='" + type + '\'' +
+                    ", description='" + description + '\'' +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "DataRegisterDiet{" +
+                "dataRegisterActivity=" + dataRegisterActivity +
+                ", dataRegisterDietDetails=" + dataRegisterDietDetails +
+                ", dataRegisterReminder=" + dataRegisterReminder +
+                '}';
     }
 }
