@@ -8,6 +8,7 @@ import com.example.topets.api.data.dto.DataUpdateMedication;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -25,4 +26,7 @@ public interface MedicationService {
 
     @PUT(URL+"/{medicationId}")
     Call<ResponseBody> updateMedication(@Path("medicationId") String medicationId, @Body DataUpdateMedication dataUpdateMedication);
+
+    @DELETE(URL+"/{medicationId}")
+    Call<ResponseBody> deleteMedication(@Path("medicationId") String medicationId);
 }

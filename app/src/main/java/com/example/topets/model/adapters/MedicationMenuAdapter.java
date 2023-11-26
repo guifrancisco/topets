@@ -71,6 +71,7 @@ public class MedicationMenuAdapter extends RecyclerView.Adapter<MedicationMenuAd
             intent.putExtra("medicationId", medication.getId());
             intent.putExtra("medicationName", medication.getName());
             intent.putExtra("medicationDescription", medication.getDescription());
+            intent.putExtra("position", medicationList.indexOf(medication));
             editMedicationLauncher.launch(intent);
         }
 

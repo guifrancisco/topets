@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Path;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.example.topets.api.Connection;
 import com.example.topets.api.data.PaginatedData;
 import com.example.topets.api.data.dto.DataReadMedication;
 import com.example.topets.api.services.MedicationService;
+import com.example.topets.enums.OperationType;
 import com.example.topets.model.adapters.MedicationMenuAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -128,6 +130,8 @@ public class MedicationMenu extends AppCompatActivity {
     }
 
 
+
+
     class GetAllMedicineCallback implements Callback<PaginatedData<DataReadMedication>>{
 
         String androidId;
@@ -201,12 +205,29 @@ public class MedicationMenu extends AppCompatActivity {
                 return;
             }
 
-            boolean isSuccess = resultIntent.getBooleanExtra("isSuccess", false);
-            if(isSuccess){
-                context.findAllMedicationsAndUpdateView();
+            String op = resultIntent.getStringExtra("operationType");
+
+            OperationType operationType = OperationType.fromString(op);
+            switch (operationType){
+                case UPDATE://invalidating entire list, and fetching new list
+                    context.findAllMedicationsAndUpdateView();
+                    break;
+                case DELETE://removing the deleted position
+                    int position = resultIntent.getIntExtra("position", -1);
+                    if(position == -1){
+                        Log.e(this.getClass().getSimpleName(), "unable to remove item");
+                        return;
+                    }
+                    medicationList.remove(position);
+                    recyclerView.getAdapter().notifyItemRemoved(position);
+                    break;
             }
+
+
+
         }
     }
+
 
 
     private class GetAllMedicationsCallbackInvalidateAll implements Callback<PaginatedData<DataReadMedication>> {
