@@ -103,6 +103,15 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         return c.getTime();
     }
 
+    public Calendar getCalendar(){
+        Calendar c = Calendar.getInstance();
+        c.clear();
+        if (year != null) {c.set(Calendar.YEAR, year);}
+        if(month != null){c.set(Calendar.MONTH, month);}
+        if(dayOfMonth != null){c.set(Calendar.DAY_OF_MONTH, dayOfMonth);}
+        return c;
+    }
+
     public boolean isEmpty(){
         return (year == null && month == null && dayOfMonth == null);
     }

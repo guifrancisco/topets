@@ -71,6 +71,7 @@ public class MedicationMenu extends AppCompatActivity {
     private void prepareAddMedicationButton() {
         addMedicationButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddMedication.class);
+            intent.putExtra("petId", petId);//sending pet id to add medication screen.
             addMedicationActivityLauncher.launch(intent);
         });
     }
