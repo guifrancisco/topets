@@ -1,14 +1,17 @@
 package com.example.topets.model.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.topets.EditMedication;
 import com.example.topets.R;
 import com.example.topets.api.data.dto.DataReadMedication;
 
@@ -18,11 +21,12 @@ public class MedicationMenuAdapter extends RecyclerView.Adapter<MedicationMenuAd
     private Context context;
     private List<DataReadMedication> medicationList;
     //TODO: Activity Launcher for medication profile
+    private ActivityResultLauncher<Intent> editMedicationLauncher;
 
-
-    public MedicationMenuAdapter(Context context, List<DataReadMedication> medicationList) {
+    public MedicationMenuAdapter(Context context, List<DataReadMedication> medicationList, ActivityResultLauncher<Intent> editMedicationLauncher) {
         this.context = context;
         this.medicationList = medicationList;
+        this.editMedicationLauncher = editMedicationLauncher;
     }
 
     @NonNull
@@ -59,6 +63,15 @@ public class MedicationMenuAdapter extends RecyclerView.Adapter<MedicationMenuAd
         public void setMedication(DataReadMedication medication) {
             this.medication = medication;
             this.medicationName.setText(medication.getName());
+            itemView.setOnClickListener(v -> navigateToEditMedicationScreen());
+        }
+
+        private void navigateToEditMedicationScreen() {
+            Intent intent = new Intent(context, EditMedication.class);
+            intent.putExtra("medicationId", medication.getId());
+            intent.putExtra("medicationName", medication.getName());
+            intent.putExtra("medicationDescription", medication.getDescription());
+            editMedicationLauncher.launch(intent);
         }
 
     }

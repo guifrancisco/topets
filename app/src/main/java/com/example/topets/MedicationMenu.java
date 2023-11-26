@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Instrumentation;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -41,7 +40,7 @@ public class MedicationMenu extends AppCompatActivity {
     private String petId;
 
     ActivityResultLauncher<Intent> addMedicationActivityLauncher;
-
+    ActivityResultLauncher<Intent> editMedicationActivityLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,14 +50,19 @@ public class MedicationMenu extends AppCompatActivity {
         recyclerView = findViewById(R.id.medicationRecyclerView);
         addMedicationButton = findViewById(R.id.floatingActionButton);
 
-        adapter = new MedicationMenuAdapter(this, medicationList);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         addMedicationActivityLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new AddMedicationActivityResultCallback(this)
         );
+
+        editMedicationActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new EditMedicationActivityResultCallback(this)
+        );
+
+        adapter = new MedicationMenuAdapter(this, medicationList, editMedicationActivityLauncher);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         restorePetId();
 
@@ -103,7 +107,7 @@ public class MedicationMenu extends AppCompatActivity {
     }
 
     /**
-     * Issues a GET request for all pets assuming that one or more pets were added.
+     * Issues a GET request for all medications assuming that one or more pets were added.
      * @param pageNumber
      */
     private void findAllAddedMedicationsAndUpdateView(int pageNumber) {
@@ -113,6 +117,16 @@ public class MedicationMenu extends AppCompatActivity {
         Call<PaginatedData<DataReadMedication>> call = medicationService.findAllMedicineByPetId(petId, pageNumber, null);
         call.enqueue(new GetAllMedicineCallback(androidId));
     }
+
+    /**
+     * Issues a GET request for all medications and invalidates the current list.
+     */
+    private void findAllMedicationsAndUpdateView() {
+        MedicationService medicationService = Connection.getMedicationService();
+        Call<PaginatedData<DataReadMedication>> call = medicationService.findAllMedicineByPetId(petId, 0, null);
+        call.enqueue(new GetAllMedicationsCallbackInvalidateAll());
+    }
+
 
     class GetAllMedicineCallback implements Callback<PaginatedData<DataReadMedication>>{
 
@@ -168,6 +182,64 @@ public class MedicationMenu extends AppCompatActivity {
         public void onActivityResult(ActivityResult o) {
             //refreshing recyclerview
             context.findAllAddedMedicationsAndUpdateView(context.currentPage);
+        }
+    }
+
+    private class EditMedicationActivityResultCallback implements ActivityResultCallback<ActivityResult> {
+        MedicationMenu context;
+
+        public EditMedicationActivityResultCallback(MedicationMenu medicationMenu) {
+            context = medicationMenu;
+        }
+
+        @Override
+        public void onActivityResult(ActivityResult o) {
+            Intent resultIntent = o.getData();
+
+            if(resultIntent == null){
+                Log.e(this.getClass().getSimpleName(), "Null result from intent");
+                return;
+            }
+
+            boolean isSuccess = resultIntent.getBooleanExtra("isSuccess", false);
+            if(isSuccess){
+                context.findAllMedicationsAndUpdateView();
+            }
+        }
+    }
+
+
+    private class GetAllMedicationsCallbackInvalidateAll implements Callback<PaginatedData<DataReadMedication>> {
+        @Override
+        public void onResponse(Call<PaginatedData<DataReadMedication>> call, Response<PaginatedData<DataReadMedication>> response) {
+            PaginatedData<DataReadMedication> body = response.body();
+            if(body == null){
+                Log.i(this.getClass().getSimpleName(), "No body in API response, ignoring...");
+                return;
+            }
+
+            //clearing old list of medications
+            int removedItems = medicationList.size();
+            medicationList.clear();
+            currentPage = 0;
+            isLast = body.isLast();
+            recyclerView.getAdapter().notifyItemRangeRemoved(0, removedItems);
+
+
+            Log.i(this.getClass().getSimpleName(), "Adding new items");
+            List<DataReadMedication> updatedList = body.getItems();
+            medicationList.addAll(updatedList);
+            Log.i(this.getClass().getSimpleName(), "Items added: " + updatedList.size());
+            Log.i(this.getClass().getSimpleName(), "Notifying recyclerview");
+            recyclerView.getAdapter().notifyItemRangeInserted(0, updatedList.size());
+        }
+
+        @Override
+        public void onFailure(Call<PaginatedData<DataReadMedication>> call, Throwable t) {
+            Toast toast = Toast.makeText(MedicationMenu.this, "Algo deu errado durante a consulta de pets", Toast.LENGTH_LONG);
+            toast.show();
+            String message = t.getMessage();
+            Log.e("error", message == null ? "Unknown error": message);
         }
     }
 }
