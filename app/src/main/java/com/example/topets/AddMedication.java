@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.topets.api.Connection;
 import com.example.topets.api.data.dto.DataRegisterMedication;
 import com.example.topets.api.services.MedicationService;
+import com.example.topets.api.util.ResponseHandler;
 import com.example.topets.enums.ActivityType;
 import com.example.topets.enums.RecurrenceType;
 import com.example.topets.fragments.DatePickerFragment;
@@ -24,6 +25,7 @@ import com.example.topets.fragments.TimePickerFragment;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -73,27 +75,7 @@ public class AddMedication extends AppCompatActivity {
         MedicationService medicationService = Connection.getMedicationService();
         Call<ResponseBody> call = medicationService.registerMedication(dataRegisterMedication);
         Log.i(this.getClass().getSimpleName(), "registering medication: " +dataRegisterMedication.toString());
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                ResponseBody body = response.body();
-                if(body == null){
-                    Log.e(this.getClass().getSimpleName(), "Null body in response");
-                }else{
-                    try {
-                        Log.i(this.getClass().getSimpleName(), "Response: " + response.body().string());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                Log.i(this.getClass().getSimpleName(), "response code was: " +response.code());
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
+        call.enqueue(new MedicationRegistrationCallback(this));
     }
 
     private DataRegisterMedication getMedication() {
@@ -189,5 +171,32 @@ public class AddMedication extends AppCompatActivity {
 
         Intent intent = getIntent();
         petId = intent.getStringExtra("petId");
+    }
+
+    private class MedicationRegistrationCallback implements Callback<ResponseBody> {
+        AddMedication context;
+        public MedicationRegistrationCallback(AddMedication addMedication) {
+        context = addMedication;
+        }
+
+
+        @Override
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            int responseCode = response.code();
+            if(responseCode == HttpURLConnection.HTTP_CREATED){
+                Toast.makeText(context, "Medicamento cadastrado com sucesso", Toast.LENGTH_LONG).show();
+                finish();
+            }else if(!response.isSuccessful()){
+                ResponseHandler.handleFailure(response);
+            }
+        }
+
+        @Override
+        public void onFailure(Call<ResponseBody> call, Throwable t) {
+            Toast toast = Toast.makeText(context, "Aconexão com a API falhou.", Toast.LENGTH_LONG);
+            toast.show();
+            String message = t.getMessage();
+            Log.e("error", message == null ? "Unknown error": message);
+        }
     }
 }
