@@ -19,6 +19,7 @@ import java.util.Locale;
 public class Menu extends AppCompatActivity {
     CardView petProfileButton;
     CardView medicationButton;
+    CardView dietButton;
     private String petId;
 
     ActivityResultLauncher<Intent> editPetLauncher;
@@ -30,6 +31,7 @@ public class Menu extends AppCompatActivity {
 
         petProfileButton = findViewById(R.id.petProfileButton);
         medicationButton = findViewById(R.id.medicationButton);
+        dietButton = findViewById(R.id.dietButton);
         //registering callback for when the edit pet screen finishes
         editPetLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -45,6 +47,17 @@ public class Menu extends AppCompatActivity {
         restorePet();
         preparePetsMenuButton();
         prepareMedicationButton();
+        prepareDietButton();
+    }
+
+    private void prepareDietButton() {
+        dietButton.setOnClickListener(v -> navigateToDietMenuScreen());
+    }
+
+    private void navigateToDietMenuScreen() {
+        Intent intent = new Intent(this, DietMenu.class);
+        intent.putExtra("petId", petId);
+        startActivity(intent);
     }
 
     private void prepareMedicationButton(){
