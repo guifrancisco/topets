@@ -35,5 +35,13 @@ public class Connection {
                 .build()
                 .create(MedicationService.class);
     }
+
+    public static DietService getDietService() {
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(DietService.class);
+    }
 }
 
