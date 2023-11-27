@@ -3,6 +3,7 @@ package com.example.topets.api;
 import com.example.topets.api.services.DeviceService;
 import com.example.topets.api.services.MedicationService;
 import com.example.topets.api.services.PetService;
+import com.example.topets.api.services.ReminderService;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -42,6 +43,14 @@ public class Connection {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(DietService.class);
+    }
+
+    public static ReminderService getReminderService(){
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ReminderService.class);
     }
 }
 
