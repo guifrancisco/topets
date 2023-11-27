@@ -1,6 +1,8 @@
 package com.example.topets.api;
 
+import com.example.topets.api.services.AppointmentService;
 import com.example.topets.api.services.DeviceService;
+import com.example.topets.api.services.DietService;
 import com.example.topets.api.services.MedicationService;
 import com.example.topets.api.services.PetService;
 
