@@ -43,5 +43,13 @@ public class Connection {
                 .build()
                 .create(DietService.class);
     }
+
+    public static AppointmentService getAppointmentService(){
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(AppointmentService.class);
+    }
 }
 

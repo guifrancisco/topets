@@ -19,12 +19,12 @@ import retrofit2.http.Query;
 
 public interface AppointmentService {
     String URL = "v1/appointment";
-    @GET(URL+"/{pedId}")
+    @GET(URL+"/{petId}")
     Call<PaginatedData<DataReadMedicalAppointment>> findAllAppointmentsByPetId(@Path("petId")String petId, @Query("page")Integer page, @Query("size")Integer size);
     @POST(URL)
     Call<ResponseBody> registerAppointment(@Body DataRegisterAppointment dataRegisterAppointment);
     @PUT(URL+"/{appointmentId}")
     Call<ResponseBody> updateAppointment(@Path("appointmentId")String appointmentId, @Body DataUpdateAppointment dataUpdateAppointment);
-    @DELETE(URL+"/appointmentId")
+    @DELETE(URL+"/{appointmentId}")
     Call<ResponseBody> deleteAppointment(@Path("appointmentId")String appointmentId);
 }

@@ -32,5 +32,22 @@ public class DataRegisterAppointment {
             this.local = local;
             this.description = description;
         }
+
+        @Override
+        public String toString() {
+            return "DataRegisterAppointmentDetails{" +
+                    "local='" + local + '\'' +
+                    ", description='" + description + '\'' +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "DataRegisterAppointment{" +
+                "dataRegisterActivity=" + dataRegisterActivity +
+                ", dataRegisterAppointmentDetails=" + dataRegisterAppointmentDetails +
+                ", dataRegisterReminder=" + dataRegisterReminder +
+                '}';
     }
 }
