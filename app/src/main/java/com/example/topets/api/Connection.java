@@ -1,6 +1,8 @@
 package com.example.topets.api;
 
+import com.example.topets.api.services.AppointmentService;
 import com.example.topets.api.services.DeviceService;
+import com.example.topets.api.services.DietService;
 import com.example.topets.api.services.MedicationService;
 import com.example.topets.api.services.PetService;
 
@@ -42,6 +44,14 @@ public class Connection {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(DietService.class);
+    }
+
+    public static AppointmentService getAppointmentService(){
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(AppointmentService.class);
     }
 }
 

@@ -92,6 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Lembrete"
+                android:checked="false"
                 android:focusable="false"
                 />
 
@@ -162,6 +163,57 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="Periodicidade"
+                    android:layout_marginTop="25dp"
+                    >
+
+                </TextView>
+                <RadioGroup
+                    android:id="@+id/recurrenceRadioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <RadioButton
+                        android:id="@+id/radioButtonNone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="Nenhum"
+                        android:layout_weight="1"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/daily"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Diário"
+                        android:layout_weight="1"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/weekly"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Semanal"
+                        android:layout_weight="1"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/monthly"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mensal"
+                        android:layout_weight="1"
+                        />
+
+                </RadioGroup>
 
 
             </LinearLayout>
