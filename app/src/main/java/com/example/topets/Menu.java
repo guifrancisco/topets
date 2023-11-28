@@ -20,7 +20,11 @@ public class Menu extends AppCompatActivity {
     CardView petProfileButton;
     CardView medicationButton;
     CardView dietButton;
+
     CardView physicalActivityButton;
+
+    CardView appointmentButton;
+
     private String petId;
 
     ActivityResultLauncher<Intent> editPetLauncher;
@@ -33,7 +37,11 @@ public class Menu extends AppCompatActivity {
         petProfileButton = findViewById(R.id.petProfileButton);
         medicationButton = findViewById(R.id.medicationButton);
         dietButton = findViewById(R.id.dietButton);
+
         physicalActivityButton = findViewById(R.id.paButton);
+
+
+        appointmentButton = findViewById(R.id.appointmentButton);
 
         //registering callback for when the edit pet screen finishes
         editPetLauncher = registerForActivityResult(
@@ -51,7 +59,9 @@ public class Menu extends AppCompatActivity {
         preparePetsMenuButton();
         prepareMedicationButton();
         prepareDietButton();
+
         preparePhysicalActivityButton();
+        prepareAppointmentButton();
     }
 
     private void preparePhysicalActivityButton() {
@@ -60,6 +70,16 @@ public class Menu extends AppCompatActivity {
 
     private void navigateToPhysicalActivityMenuScreen() {
         Intent intent = new Intent(this, PhysicalActivityMenu.class);
+        intent.putExtra("petId", petId);
+        startActivity(intent);
+    }
+
+    private void prepareAppointmentButton() {
+        appointmentButton.setOnClickListener(v -> navigateToAppointmentMenuScreen());
+    }
+
+    private void navigateToAppointmentMenuScreen() {
+        Intent intent = new Intent(this, MedicalAppointmentMenu.class);
         intent.putExtra("petId", petId);
         startActivity(intent);
     }
