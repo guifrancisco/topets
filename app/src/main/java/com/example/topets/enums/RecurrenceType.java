@@ -1,12 +1,13 @@
 package com.example.topets.enums;
 
 public enum RecurrenceType {
-    DAILY("daily"), WEEKLY("weekly"), MONTHLY("monthly"), YEARLY("yearly");
+    DAILY("daily", 24L*60*60*1000), WEEKLY("weekly", 7L*24*60*60*1000), MONTHLY("monthly", 30L *7*24*60*60*1000), YEARLY("yearly", 12L*30*7*24*60*60*1000);
 
     private String label;
-
-    RecurrenceType(String label) {
+    private long interval;
+    RecurrenceType(String label, long interval) {
         this.label = label;
+        this.interval = interval;
     }
 
     public String getLabel() {
@@ -38,5 +39,9 @@ public enum RecurrenceType {
             default:
                 throw new IllegalArgumentException(String.format("No constant for String \"%s\"", s));
         }
+    }
+
+    public long getInterval() {
+        return interval;
     }
 }
