@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class DataReadReminder {
     String id;
@@ -43,11 +44,15 @@ public class DataReadReminder {
         return activityType;
     }
 
-    public Calendar getDateTime() {
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public Calendar getDateTimeAsCalendar() {
         try {
             Calendar c = Calendar.getInstance();
             c.clear();
-            c.setTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'").parse(dateTime));
+            c.setTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(dateTime));
             return c;
         } catch (ParseException e) {
             Log.e(this.getClass().getSimpleName(), "Error while parsing dateTime string: " + dateTime);
@@ -65,5 +70,18 @@ public class DataReadReminder {
 
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DataReadReminder that = (DataReadReminder) o;
+        return id.equals(that.id) && name.equals(that.name) && activityType == that.activityType && Objects.equals(dateTime, that.dateTime) && periodic.equals(that.periodic) && recurrenceType == that.recurrenceType && Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, activityType, dateTime, periodic, recurrenceType, description);
     }
 }

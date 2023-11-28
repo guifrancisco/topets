@@ -1,7 +1,17 @@
 package com.example.topets.enums;
 
 public enum RecurrenceType {
-    DAILY, WEEKLY, MONTHLY, YEARLY;
+    DAILY("daily"), WEEKLY("weekly"), MONTHLY("monthly"), YEARLY("yearly");
+
+    private String label;
+
+    RecurrenceType(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 
     public static RecurrenceType fromString(String s) {
         switch (s.toLowerCase()){
