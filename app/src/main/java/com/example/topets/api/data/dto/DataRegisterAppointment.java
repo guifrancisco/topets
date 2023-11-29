@@ -24,6 +24,14 @@ public class DataRegisterAppointment {
         this.dataRegisterReminder = new DataRegisterReminder(dateTime, activityType, periodic, recurrenceType, reminderDescription);
     }
 
+    public DataRegisterReminder getDataRegisterReminder() {
+        return dataRegisterReminder;
+    }
+
+    public String getName() {
+        return dataRegisterActivity.getName();
+    }
+
     private class DataRegisterAppointmentDetails {
         String local;
         String description;

@@ -14,6 +14,9 @@ import com.example.topets.api.data.dto.DataUpdateAppointment;
 import com.example.topets.api.services.AppointmentService;
 import com.example.topets.api.util.ResponseHandler;
 import com.example.topets.enums.OperationType;
+import com.example.topets.model.Reminder;
+import com.example.topets.notification.NotificationScheduler;
+import com.example.topets.system.IntentDataHelper;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.net.HttpURLConnection;
@@ -138,6 +141,12 @@ public class EditAppointment extends AppCompatActivity {
             int responseCode = response.code();
             if(responseCode == HttpURLConnection.HTTP_NO_CONTENT){
                 Toast.makeText(context, "Consulta excluída com sucesso", Toast.LENGTH_LONG).show();
+
+                //attempting to delete reminder
+                Reminder reminder = IntentDataHelper.getReminderInfoFromIntent(getIntent());
+                if(reminder != null){
+                    NotificationScheduler.deleteNotificationForReminder(context, reminder);
+                }
 
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("operationType", OperationType.DELETE.getLabel());
