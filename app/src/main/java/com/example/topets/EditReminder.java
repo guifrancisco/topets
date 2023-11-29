@@ -20,6 +20,8 @@ import com.example.topets.enums.OperationType;
 import com.example.topets.enums.RecurrenceType;
 import com.example.topets.fragments.DatePickerFragment;
 import com.example.topets.fragments.TimePickerFragment;
+import com.example.topets.model.Reminder;
+import com.example.topets.notification.NotificationScheduler;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.net.HttpURLConnection;
@@ -47,6 +49,7 @@ public class EditReminder extends AppCompatActivity {
 
     TimePickerFragment timePickerFragment;
     DatePickerFragment datePickerFragment;
+    Reminder oldReminder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +101,7 @@ public class EditReminder extends AppCompatActivity {
         ReminderService service = Connection.getReminderService();
         Call<ResponseBody> call = service.updateReminder(reminderId, dataUpdateReminder);
         Log.i(this.getClass().getSimpleName(), "Updating reminder of id: " + reminderId);
-        call.enqueue(new ReminderUpdateCallback(this));
+        call.enqueue(new ReminderUpdateCallback(this, dataUpdateReminder));
     }
 
     private DataUpdateReminder getReminder() {
@@ -132,25 +135,30 @@ public class EditReminder extends AppCompatActivity {
     private void restoreReminder() {
         Intent callingIntent = getIntent();
         //setting reminder info
-        reminderId = callingIntent.getStringExtra("reminderId");
-        reminderActivityType = ActivityType.fromString(callingIntent.getStringExtra("reminderActivityType"));
+        String reminderId = callingIntent.getStringExtra("reminderId");
+        ActivityType reminderActivityType = ActivityType.fromString(callingIntent.getStringExtra("reminderActivityType"));
+        String reminderName = callingIntent.getStringExtra("reminderName");
+        String reminderDescription = callingIntent.getStringExtra("reminderDescription");
 
-
-        reminderName.setText(callingIntent.getStringExtra("reminderName"));
-        reminderDescription.setText(callingIntent.getStringExtra("reminderDescription"));
+        this.reminderId = reminderId;
+        this.reminderActivityType = reminderActivityType;
+        this.reminderName.setText(reminderName);
+        this.reminderDescription.setText(reminderDescription);
 
         String dateTime = callingIntent.getStringExtra("reminderDateTime");
         datePickerFragment.setDate(dateTime);
         timePickerFragment.setDate(dateTime);
 
         boolean reminderPeriodic = callingIntent.getBooleanExtra("reminderPeriodic", false);
+        String rString = callingIntent.getStringExtra("reminderRecurrenceType");
+        RecurrenceType r = RecurrenceType.fromString(rString);
         if(reminderPeriodic){
-            String rString = callingIntent.getStringExtra("reminderRecurrenceType");
-            RecurrenceType r = RecurrenceType.fromString(rString);
             setRecurrenceSelection(r);
         }else{
             ((RadioButton)findViewById(R.id.radioButtonNone)).setChecked(true);//set recurrence to none if the reminder is not periodic.
         }
+
+        oldReminder = new Reminder(reminderName, dateTime, reminderActivityType, reminderPeriodic, r, reminderDescription);
     }
 
     private void setRecurrenceSelection(RecurrenceType reminderRecurrenceType) {
@@ -188,8 +196,10 @@ public class EditReminder extends AppCompatActivity {
 
     private class ReminderUpdateCallback implements Callback<ResponseBody> {
         EditReminder context;
-        public ReminderUpdateCallback(EditReminder editReminder) {
+        DataUpdateReminder updatedReminder;
+        public ReminderUpdateCallback(EditReminder editReminder, DataUpdateReminder updatedReminder) {
             context = editReminder;
+            this.updatedReminder = updatedReminder;
         }
 
         @Override
@@ -197,6 +207,9 @@ public class EditReminder extends AppCompatActivity {
             int responseCode = response.code();
             if(responseCode == HttpURLConnection.HTTP_OK){
                 Toast.makeText(context, "Lembrete atualizado com sucesso", Toast.LENGTH_LONG).show();
+
+                String reminderName = context.reminderName.getText().toString();
+                NotificationScheduler.updateNotificationForReminder(context, context.oldReminder, new Reminder(updatedReminder, reminderName));
 
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("operationType", OperationType.UPDATE.getLabel());
@@ -227,6 +240,8 @@ public class EditReminder extends AppCompatActivity {
             int responseCode = response.code();
             if(responseCode == HttpURLConnection.HTTP_NO_CONTENT){
                 Toast.makeText(context, "Lembrete excluído com sucesso", Toast.LENGTH_LONG).show();
+
+                NotificationScheduler.deleteNotificationForReminder(context, context.oldReminder);
 
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("operationType", OperationType.DELETE.getLabel());
