@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.topets.model.Activity;
@@ -13,33 +14,78 @@ import java.util.Calendar;
 
 public class NotificationScheduler {
 
-    public static void scheduleNotification(Context context, Long triggerAtMillis, String title, String content){
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, NotificationReceiver.class);
-        intent.putExtra("title", title);
-        intent.putExtra("content", content);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_MUTABLE);
-        if (triggerAtMillis == null){
-            triggerAtMillis = Calendar.getInstance().getTimeInMillis() + (2* 1000);//schedule for 2s in the future
-        }
-        alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
-     }
-
+    /**
+     * Schedules a notification matching the given reminder. This reminder uniquely identifies the notification,
+     * and can be used to later delete the scheduled notification.
+     * @see NotificationScheduler#deleteNotificationForReminder(Context, Reminder)
+     * @see NotificationScheduler#updateNotificationForReminder(Context, Reminder, Reminder)
+     * @param context The context that triggered the scheduling
+     * @param reminder The reminder that will generate the notification
+     */
      public static void scheduleNotificationForReminder(Context context, Reminder reminder){
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, NotificationReceiver.class);
-         intent.putExtra("reminderId", reminder.getId());
-         intent.putExtra("reminderContent", reminder.getContent());
-         intent.putExtra("activityName", reminder.getActivity().getName());
-         intent.putExtra("petName", reminder.getActivity().getPet().getName());
+        PendingIntent intent = getNotificationIntentForReminder(context, reminder);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+        long reminderTime = reminder.getDateTimeInMillis();
+        if(reminder.isPeriodic()){
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, reminderTime, reminder.getRecurrenceType().getInterval(), intent);
+        }else{
+            alarmManager.set(AlarmManager.RTC_WAKEUP, reminderTime , intent);
+        }
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, reminder.getDate().getTime() ,pendingIntent);
-
-        Toast t = Toast.makeText(context, String.format("Registrado lembrete do pet: %s", reminder.getActivity().getPet().getName() ), Toast.LENGTH_LONG);
-        t.show();
+         Log.i(NotificationScheduler.class.getSimpleName(), String.format("Registrando lembrete : hash: %d || %s", reminder.hashCode(), reminder));
     }
 
+    /**
+     * "Updates" a scheduled notification by removing it's old alarm, and setting a new one.
+     * This operation doesn't actually update the notification and merely replaces it. Since
+     * a notification is identified by the Reminder object that was used to create it, any updates to
+     * the reminder effectively make it no longer the same notification,
+     * verified by the return of <code>Objects.equals(oldReminder,newReminder)</code> being <code>false</code>
+     * @see NotificationScheduler#scheduleNotificationForReminder(Context, Reminder)
+     * @see NotificationScheduler#deleteNotificationForReminder(Context, Reminder)
+     * @param context The context that triggered the scheduling
+     * @param oldReminder The reminder representing the previously scheduled notification
+     * @param newReminder The reminder representing the notification to be scheduled
+     */
+    public static void updateNotificationForReminder(Context context, Reminder oldReminder, Reminder newReminder){
+        deleteNotificationForReminder(context, oldReminder);//removing old reminder
+        scheduleNotificationForReminder(context, newReminder);
+    }
+
+    /**
+     * Removes the schedule notification matching the given reminder from the system.
+     * The notification will no longer be triggered after calling this method.
+     * In the case that no notification exists matching the reminder, this method does nothing.
+     * @see NotificationScheduler#scheduleNotificationForReminder(Context, Reminder) (Context, Long, String, String)
+     * @see NotificationScheduler#updateNotificationForReminder(Context, Reminder, Reminder)
+     * @param context The context that triggered the removal
+     * @param reminder The reminder representing the notification to be removed
+     */
+    public static void deleteNotificationForReminder(Context context, Reminder reminder){
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent intent = getNotificationIntentForReminder(context, reminder);
+
+        alarmManager.cancel(intent);
+        Log.i(NotificationScheduler.class.getSimpleName(), String.format("Removendo lembrete : hash: %d || %s", reminder.hashCode(), reminder));
+    }
+
+    /**
+     * Returns the intent that will trigger the notification. Two intents generated by equal reminders
+     * will also be equal.
+     * @param context
+     * @param reminder
+     * @return
+     */
+    public static PendingIntent getNotificationIntentForReminder(Context context, Reminder reminder){
+        Intent intent = new Intent(context, NotificationReceiver.class);
+        intent.putExtra("reminderName", reminder.getName());
+        intent.putExtra("reminderDateTime", reminder.getDateTime());
+        intent.putExtra("reminderActivityType", reminder.getActivityType().getLabel());
+        intent.putExtra("reminderPeriodic", reminder.isPeriodic());
+        intent.putExtra("reminderRecurrenceType", reminder.getRecurrenceType().getLabel());
+        intent.putExtra("reminderDescription", reminder.getDescription());
+
+        return PendingIntent.getBroadcast(context, reminder.hashCode(), intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+    }
 }
