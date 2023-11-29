@@ -24,4 +24,32 @@ public class DataUpdateReminder {
         this.recurrenceType = recurrenceType;
         this.description = description;
     }
+
+    public DataUpdateReminder(String dateTime, ActivityType activityType, boolean periodic, RecurrenceType recurrenceType, String description) {
+        this.dateTime = dateTime;
+        this.activityType = activityType;
+        this.periodic = periodic;
+        this.recurrenceType = recurrenceType;
+        this.description = description;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public ActivityType getActivityType() {
+        return activityType;
+    }
+
+    public boolean isPeriodic() {
+        return periodic;
+    }
+
+    public RecurrenceType getRecurrenceType() {
+        return recurrenceType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }
