@@ -25,7 +25,7 @@ public class IntentDataHelper {
         RecurrenceType recurrenceType   = RecurrenceType.fromString(intent.getStringExtra("reminderRecurrenceType"));
         String description              = intent.getStringExtra("reminderDescription");
 
-        if(name == null || date == null || description == null){
+        if(name == null || date == null || activityType == null || recurrenceType == null || description == null){
             return null;
         }
 

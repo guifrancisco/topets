@@ -15,6 +15,7 @@ public enum RecurrenceType {
     }
 
     public static RecurrenceType fromString(String s) {
+        if(s == null){return null;}
         switch (s.toLowerCase()){
             case "daily":
                 return DAILY;

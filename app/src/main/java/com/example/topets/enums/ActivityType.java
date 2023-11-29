@@ -16,6 +16,7 @@ public enum ActivityType {
     }
 
     public static ActivityType fromString(String s){
+        if(s == null){return null;}
         switch (s){
             case "PHYSICAL_ACTIVITY":
                 return PHYSICAL_ACTIVITY;
