@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.topets.EditMedication;
 import com.example.topets.R;
 import com.example.topets.api.data.dto.DataReadMedication;
+import com.example.topets.api.data.dto.DataReadReminder;
+import com.example.topets.model.Reminder;
+import com.example.topets.system.IntentDataHelper;
 
 import java.util.List;
 
@@ -72,6 +75,12 @@ public class MedicationMenuAdapter extends RecyclerView.Adapter<MedicationMenuAd
             intent.putExtra("medicationName", medication.getName());
             intent.putExtra("medicationDescription", medication.getDescription());
             intent.putExtra("position", medicationList.indexOf(medication));
+
+            //putting reminder info on intent
+            DataReadReminder reminder = medication.getDataReadReminder();
+            if(reminder != null){
+                IntentDataHelper.addReminderInfoToIntent(intent, new Reminder(reminder));
+            }
             editMedicationLauncher.launch(intent);
         }
 

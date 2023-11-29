@@ -16,18 +16,19 @@ import android.widget.Toast;
 
 import com.example.topets.api.Connection;
 import com.example.topets.api.data.dto.DataRegisterMedication;
+import com.example.topets.api.data.dto.DataRegisterReminder;
 import com.example.topets.api.services.MedicationService;
 import com.example.topets.api.util.ResponseHandler;
 import com.example.topets.enums.ActivityType;
 import com.example.topets.enums.RecurrenceType;
 import com.example.topets.fragments.DatePickerFragment;
 import com.example.topets.fragments.TimePickerFragment;
+import com.example.topets.model.Reminder;
+import com.example.topets.notification.NotificationScheduler;
 import com.example.topets.util.DateStringConverter;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import okhttp3.ResponseBody;
@@ -76,7 +77,7 @@ public class AddMedication extends AppCompatActivity {
         MedicationService medicationService = Connection.getMedicationService();
         Call<ResponseBody> call = medicationService.registerMedication(dataRegisterMedication);
         Log.i(this.getClass().getSimpleName(), "registering medication: " +dataRegisterMedication.toString());
-        call.enqueue(new MedicationRegistrationCallback(this));
+        call.enqueue(new MedicationRegistrationCallback(this, dataRegisterMedication));
     }
 
     private DataRegisterMedication getMedication() {
@@ -176,8 +177,10 @@ public class AddMedication extends AppCompatActivity {
 
     private class MedicationRegistrationCallback implements Callback<ResponseBody> {
         AddMedication context;
-        public MedicationRegistrationCallback(AddMedication addMedication) {
-        context = addMedication;
+        DataRegisterMedication registeredMedication;
+        public MedicationRegistrationCallback(AddMedication addMedication, DataRegisterMedication dataRegisterMedication) {
+            context = addMedication;
+            this.registeredMedication = dataRegisterMedication;
         }
 
 
@@ -186,6 +189,13 @@ public class AddMedication extends AppCompatActivity {
             int responseCode = response.code();
             if(responseCode == HttpURLConnection.HTTP_CREATED){
                 Toast.makeText(context, "Medicamento cadastrado com sucesso", Toast.LENGTH_LONG).show();
+
+                DataRegisterReminder reminder = registeredMedication.getDataRegisterReminder();
+                if(reminder != null){
+                    //a reminder was registered, send it to the scheduler
+                    NotificationScheduler.scheduleNotificationForReminder(context, new Reminder(reminder, registeredMedication.getName()));
+                }
+
                 finish();
             }else if(!response.isSuccessful()){
                 ResponseHandler.handleFailure(response);

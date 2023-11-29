@@ -15,6 +15,9 @@ import com.example.topets.api.data.dto.DataUpdateMedication;
 import com.example.topets.api.services.MedicationService;
 import com.example.topets.api.util.ResponseHandler;
 import com.example.topets.enums.OperationType;
+import com.example.topets.model.Reminder;
+import com.example.topets.notification.NotificationScheduler;
+import com.example.topets.system.IntentDataHelper;
 import com.google.android.material.textfield.TextInputEditText;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -133,6 +136,12 @@ public class EditMedication extends AppCompatActivity {
             int responseCode = response.code();
             if(responseCode == HttpsURLConnection.HTTP_NO_CONTENT){
                 Toast.makeText(context, "Medicamento excluído com sucesso", Toast.LENGTH_LONG).show();
+
+                //attempting to delete reminder
+                Reminder reminder = IntentDataHelper.getReminderInfoFromIntent(getIntent());
+                if(reminder != null){
+                    NotificationScheduler.deleteNotificationForReminder(context, reminder);
+                }
 
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("operationType", OperationType.DELETE.getLabel());
