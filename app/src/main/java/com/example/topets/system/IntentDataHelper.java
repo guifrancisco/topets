@@ -17,6 +17,11 @@ public class IntentDataHelper {
         intent.putExtra("reminderDescription"   , reminder.getDescription());
     }
 
+    /**
+     * Recovers the reminder information stored in an intent
+     * @param intent the intent containing the reminder
+     * @return the Reminder found in the intent, or <code>null</code> if none was found
+     */
     public static Reminder getReminderInfoFromIntent(Intent intent){
         String name                     = intent.getStringExtra("reminderName");
         String date                     = intent.getStringExtra("reminderDateTime");
