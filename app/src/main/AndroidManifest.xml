@@ -17,6 +17,15 @@
         android:theme="@style/Theme.TOPETS"
         tools:targetApi="31">
         <activity
+            android:name=".EditPhysicalActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddPhysicalActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PhysicalActivityMenu"
+            android:exported="false" />
+        <activity
             android:name=".EditDiet"
             android:exported="false" />
         <activity
