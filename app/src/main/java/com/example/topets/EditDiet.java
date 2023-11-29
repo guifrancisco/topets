@@ -149,7 +149,9 @@ public class EditDiet extends AppCompatActivity {
 
                 //attempting to delete reminder
                 Reminder reminder = IntentDataHelper.getReminderInfoFromIntent(getIntent());
-                NotificationScheduler.deleteNotificationForReminder(context, reminder);
+                if(reminder != null){
+                    NotificationScheduler.deleteNotificationForReminder(context, reminder);
+                }
 
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("operationType", OperationType.DELETE.getLabel());

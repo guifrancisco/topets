@@ -78,7 +78,9 @@ public class DietMenuAdapter extends RecyclerView.Adapter<DietMenuAdapter.Recycl
 
             //putting reminder info on intent
             DataReadReminder reminder = diet.getDataReadReminder();
-            IntentDataHelper.addReminderInfoToIntent(intent, new Reminder(reminder));
+            if(reminder != null){
+                IntentDataHelper.addReminderInfoToIntent(intent, new Reminder(reminder));
+            }
             editDietActivityLauncher.launch(intent);
         }
     }

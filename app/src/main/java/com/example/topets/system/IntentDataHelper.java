@@ -18,13 +18,17 @@ public class IntentDataHelper {
     }
 
     public static Reminder getReminderInfoFromIntent(Intent intent){
-        return new Reminder(
-                intent.getStringExtra("reminderName"),
-                intent.getStringExtra("reminderDateTime"),
-                ActivityType.fromString(intent.getStringExtra("reminderActivityType")),
-                intent.getBooleanExtra("reminderPeriodic", false),
-                RecurrenceType.fromString(intent.getStringExtra("reminderRecurrenceType")),
-                intent.getStringExtra("reminderDescription")
-        );
+        String name                     = intent.getStringExtra("reminderName");
+        String date                     = intent.getStringExtra("reminderDateTime");
+        ActivityType activityType       = ActivityType.fromString(intent.getStringExtra("reminderActivityType"));
+        boolean periodic                = intent.getBooleanExtra("reminderPeriodic", false);
+        RecurrenceType recurrenceType   = RecurrenceType.fromString(intent.getStringExtra("reminderRecurrenceType"));
+        String description              = intent.getStringExtra("reminderDescription");
+
+        if(name == null || date == null || description == null){
+            return null;
+        }
+
+        return new Reminder(name, date, activityType, periodic, recurrenceType, description);
     }
 }
