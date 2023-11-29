@@ -4,28 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddAppointment"
+    tools:context=".AddPhysicalActivity"
     android:orientation="vertical"
     android:gravity="center"
     >
 
     <ImageView
-        android:id="@+id/medical_appointment_menu_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/baseline_add_24_white"
-        android:background="@drawable/health_icon_100"
-        app:tint="#E86C60"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/imageView3"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@mipmap/pa_icon"
         android:layout_margin="10dp"
         />
 
     <ScrollView
         android:layout_width="320dp"
         android:layout_height="match_parent"
-        android:contentDescription="formulario adicionar consulta"
+        android:contentDescription="formulario adicionar alimentação"
         android:layout_weight="1"
         >
 
@@ -43,7 +38,7 @@
                 >
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/appointmentName"
+                    android:id="@+id/physicalActivityName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nome"
@@ -51,13 +46,14 @@
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="25dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/appointmentLocation"
+                    android:id="@+id/physicalActivityLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Local"
@@ -65,19 +61,6 @@
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="25dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/appointmentDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Descrição"
-                    android:singleLine="true"
-                    />
-            </com.google.android.material.textfield.TextInputLayout>
 
             <View
                 android:id="@+id/divider"
@@ -92,7 +75,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Lembrete"
-                android:checked="false"
                 android:focusable="false"
                 />
 
@@ -135,10 +117,10 @@
                         >
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/dateAppointmentEditText"
+                            android:id="@+id/dateReminderEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Data da consulta"
+                            android:hint="Data"
                             android:singleLine="true"
                             android:focusable="false"
                             />
@@ -152,10 +134,10 @@
                         >
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/timeAppointmentEditText"
+                            android:id="@+id/timeReminderEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Hora da consulta"
+                            android:hint="Hora"
                             android:singleLine="true"
                             android:focusable="false"
                             android:layout_marginStart="5dp"
@@ -172,6 +154,7 @@
                     >
 
                 </TextView>
+
                 <RadioGroup
                     android:id="@+id/recurrenceRadioGroup"
                     android:layout_width="match_parent"
@@ -215,7 +198,6 @@
 
                 </RadioGroup>
 
-
             </LinearLayout>
 
 
@@ -230,6 +212,5 @@
         android:backgroundTint="#24A9DA"
         android:layout_margin="5dp"
         />
-
 
 </LinearLayout>

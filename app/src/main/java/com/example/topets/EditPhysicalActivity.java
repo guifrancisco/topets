@@ -10,8 +10,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.topets.api.Connection;
-import com.example.topets.api.data.dto.DataUpdateAppointment;
-import com.example.topets.api.services.AppointmentService;
+import com.example.topets.api.data.dto.DataUpdatePhysicalActivity;
+import com.example.topets.api.services.PhysicalActivityService;
 import com.example.topets.api.util.ResponseHandler;
 import com.example.topets.enums.OperationType;
 import com.google.android.material.textfield.TextInputEditText;
@@ -23,97 +23,93 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EditAppointment extends AppCompatActivity {
-    EditText appointmentName;
-    TextInputEditText appointmentLocation;
-    TextInputEditText appointmentDescription;
+public class EditPhysicalActivity extends AppCompatActivity {
+    EditText physicalActivityName;
+    TextInputEditText physicalActivityLocation;
     Button saveButton;
     Button deleteButton;
-    String appointmentId;
+    String physicalActivityId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_appointment);
+        setContentView(R.layout.activity_edit_physical);
 
-        initializeComponents();
-        restoreAppointment();
+        initializaComponents();
+        restorePhysicalActivity();
         prepareSaveButton();
         prepareDeleteButton();
     }
 
     private void prepareDeleteButton() {
-        deleteButton.setOnClickListener(v -> deleteAppointment());
+        deleteButton.setOnClickListener(v -> deletePhysicalActivity());
     }
 
-    private void deleteAppointment() {
-        AppointmentService appointmentService = Connection.getAppointmentService();
-        Call<ResponseBody> call = appointmentService.deleteAppointment(appointmentId);
-        call.enqueue(new DeleteAppointmentCallback(this));
+    private void deletePhysicalActivity() {
+        PhysicalActivityService service = Connection.getPhyisicalActivityService();
+        Call<ResponseBody> call = service.deletePhysicalActivity(physicalActivityId);
+        call.enqueue(new DeletePhysicalActivityCallback(this));
     }
 
     private void prepareSaveButton() {
-        saveButton.setOnClickListener(v -> updateAppointment());
+        saveButton.setOnClickListener(v -> updatePhysicalActivity());
+
     }
 
-    private void updateAppointment() {
-        DataUpdateAppointment dataUpdateAppointment = getAppointment();
+    private void updatePhysicalActivity() {
+        DataUpdatePhysicalActivity dto = getPhysicalActivity();
 
-        if(dataUpdateAppointment == null){
+        if(dto == null){
             Toast.makeText(this, "Por favor preencha os campos corretamente", Toast.LENGTH_LONG).show();
             return;
         }
 
-        AppointmentService appointmentService = Connection.getAppointmentService();
-        Call<ResponseBody> call = appointmentService.updateAppointment(appointmentId, dataUpdateAppointment);
-        Log.i(this.getClass().getSimpleName(), "Updating appointment of id: " + appointmentId);
-        call.enqueue(new AppointmentUpdateCallback(this));
+        PhysicalActivityService service = Connection.getPhyisicalActivityService();
+        Call<ResponseBody> call = service.updatePhysicalActivity(physicalActivityId, dto);
+        Log.i(this.getClass().getSimpleName(), "Updating PA of id: " + physicalActivityId);
+        call.enqueue(new PhysicalActivityUpdateCallback(this));
     }
 
-    private DataUpdateAppointment getAppointment() {
-        String name = appointmentName.getText().toString();
-        String location = appointmentLocation.getText().toString();
-        String description = appointmentDescription.getText().toString();
-        if(name.isEmpty() || location.isEmpty() || description.isEmpty()){
+    private DataUpdatePhysicalActivity getPhysicalActivity() {
+        String name = physicalActivityName.getText().toString();
+        String location = physicalActivityLocation.getText().toString();
+        if(name.isEmpty() || location.isEmpty()){
             return null;
         }
-        return new DataUpdateAppointment(name, false, location, description);
+        return new DataUpdatePhysicalActivity(name, false, location);
     }
 
-    private void restoreAppointment() {
+    private void restorePhysicalActivity() {
         Intent callingIntent = getIntent();
-        appointmentId = callingIntent.getStringExtra("appointmentId");
-        appointmentName.setText(callingIntent.getStringExtra("appointmentName"));
-        appointmentLocation.setText(callingIntent.getStringExtra("appointmentLocal"));
-        appointmentDescription.setText(callingIntent.getStringExtra("appointmentDescription"));
-
+        physicalActivityId = callingIntent.getStringExtra("physicalActivityId");
+        physicalActivityName.setText(callingIntent.getStringExtra("physicalActivityName"));
+        physicalActivityLocation.setText(callingIntent.getStringExtra("physicalActivityLocation"));
     }
 
-    private void initializeComponents() {
-        appointmentName = findViewById(R.id.appointmentName);
-        appointmentLocation = findViewById(R.id.appointmentLocation);
-        appointmentDescription = findViewById(R.id.appointmentDescription);
+    private void initializaComponents() {
+        physicalActivityName = findViewById(R.id.physicalActivityName);
+        physicalActivityLocation = findViewById(R.id.physicalActivityLocation);
 
         saveButton = findViewById(R.id.saveButton);
         deleteButton = findViewById(R.id.deleteButton);
     }
 
-    private class AppointmentUpdateCallback implements Callback<ResponseBody> {
-        EditAppointment context;
-        public AppointmentUpdateCallback(EditAppointment editAppointment) {
-            context = editAppointment;
+    private class PhysicalActivityUpdateCallback implements Callback<ResponseBody> {
+        EditPhysicalActivity context;
+        public PhysicalActivityUpdateCallback(EditPhysicalActivity editPhysicalActivity) {
+            context = editPhysicalActivity;
         }
 
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             int responseCode = response.code();
             if(responseCode == HttpURLConnection.HTTP_OK){
-                Toast.makeText(context, "Consulta atualizada com sucesso", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Atividade física atualizada com sucesso", Toast.LENGTH_LONG).show();
 
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("operationType", OperationType.UPDATE.getLabel());
                 setResult(RESULT_OK, resultIntent);
                 finish();
-            }else if (!response.isSuccessful()){
+            }else if(!response.isSuccessful()){
                 ResponseHandler.handleFailure(response);
             }
         }
@@ -127,17 +123,17 @@ public class EditAppointment extends AppCompatActivity {
         }
     }
 
-    private class DeleteAppointmentCallback implements Callback<ResponseBody> {
-        EditAppointment context;
-        public DeleteAppointmentCallback(EditAppointment editAppointment) {
-            context = editAppointment;
+    private class DeletePhysicalActivityCallback implements Callback<ResponseBody> {
+        EditPhysicalActivity context;
+        public DeletePhysicalActivityCallback(EditPhysicalActivity editPhysicalActivity) {
+            context = editPhysicalActivity;
         }
 
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             int responseCode = response.code();
             if(responseCode == HttpURLConnection.HTTP_NO_CONTENT){
-                Toast.makeText(context, "Consulta excluída com sucesso", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Atividade física excluída com sucesso", Toast.LENGTH_LONG).show();
 
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("operationType", OperationType.DELETE.getLabel());

@@ -21,6 +21,11 @@ public class Menu extends AppCompatActivity {
     CardView medicationButton;
     CardView dietButton;
     CardView reminderButton;
+
+    CardView physicalActivityButton;
+
+    CardView appointmentButton;
+
     private String petId;
 
     ActivityResultLauncher<Intent> editPetLauncher;
@@ -34,6 +39,12 @@ public class Menu extends AppCompatActivity {
         medicationButton = findViewById(R.id.medicationButton);
         dietButton = findViewById(R.id.dietButton);
         reminderButton = findViewById(R.id.reminderButton);
+
+        physicalActivityButton = findViewById(R.id.paButton);
+
+
+        appointmentButton = findViewById(R.id.appointmentButton);
+
         //registering callback for when the edit pet screen finishes
         editPetLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -51,6 +62,8 @@ public class Menu extends AppCompatActivity {
         prepareMedicationButton();
         prepareDietButton();
         prepareReminderButton();
+        preparePhysicalActivityButton();
+        prepareAppointmentButton();
     }
 
     private void prepareReminderButton() {
@@ -59,6 +72,27 @@ public class Menu extends AppCompatActivity {
 
     private void navigateToReminderMenuScreen() {
         Intent intent = new Intent(this, ReminderMenu.class);
+        intent.putExtra("petId", petId);
+        startActivity(intent);
+    }
+
+
+    private void preparePhysicalActivityButton() {
+        physicalActivityButton.setOnClickListener(v -> navigateToPhysicalActivityMenuScreen());
+    }
+
+    private void navigateToPhysicalActivityMenuScreen() {
+        Intent intent = new Intent(this, PhysicalActivityMenu.class);
+        intent.putExtra("petId", petId);
+        startActivity(intent);
+    }
+
+    private void prepareAppointmentButton() {
+        appointmentButton.setOnClickListener(v -> navigateToAppointmentMenuScreen());
+    }
+
+    private void navigateToAppointmentMenuScreen() {
+        Intent intent = new Intent(this, MedicalAppointmentMenu.class);
         intent.putExtra("petId", petId);
         startActivity(intent);
     }
