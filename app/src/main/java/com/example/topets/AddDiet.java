@@ -16,16 +16,18 @@ import android.widget.Toast;
 
 import com.example.topets.api.Connection;
 import com.example.topets.api.data.dto.DataRegisterDiet;
+import com.example.topets.api.data.dto.DataRegisterReminder;
 import com.example.topets.api.services.DietService;
 import com.example.topets.api.util.ResponseHandler;
 import com.example.topets.enums.ActivityType;
 import com.example.topets.enums.RecurrenceType;
 import com.example.topets.fragments.DatePickerFragment;
 import com.example.topets.fragments.TimePickerFragment;
+import com.example.topets.model.Reminder;
+import com.example.topets.notification.NotificationScheduler;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.net.HttpURLConnection;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import okhttp3.ResponseBody;
@@ -69,7 +71,7 @@ public class AddDiet extends AppCompatActivity {
         DietService dietService = Connection.getDietService();
         Call<ResponseBody> call = dietService.registerDiet(dataRegisterDiet);
         Log.i(this.getClass().getSimpleName(), "Registering diet: " + dataRegisterDiet);
-        call.enqueue(new DietRegistrationCallback(this));
+        call.enqueue(new DietRegistrationCallback(this, dataRegisterDiet));
     }
 
     private DataRegisterDiet getDiet() {
@@ -166,8 +168,10 @@ public class AddDiet extends AppCompatActivity {
 
     private class DietRegistrationCallback implements retrofit2.Callback<ResponseBody> {
         AddDiet context;
-        public DietRegistrationCallback(AddDiet addDiet) {
+        DataRegisterDiet registeredDiet;
+        public DietRegistrationCallback(AddDiet addDiet, DataRegisterDiet registeredDiet) {
             context = addDiet;
+            this.registeredDiet = registeredDiet;
         }
 
         @Override
@@ -175,6 +179,13 @@ public class AddDiet extends AppCompatActivity {
             int responseCode = response.code();
             if(responseCode == HttpURLConnection.HTTP_CREATED){
                 Toast.makeText(context, "Medicamento cadastrado com sucesso", Toast.LENGTH_LONG).show();
+
+                DataRegisterReminder reminder = registeredDiet.getDataRegisterReminder();
+                if(reminder != null){
+                    //a reminder was registered, send it to the scheduler.
+                    NotificationScheduler.scheduleNotificationForReminder(context, new Reminder(reminder, registeredDiet.getName()));
+                }
+
                 finish();
             }else if(!response.isSuccessful()){
                 ResponseHandler.handleFailure(response);
