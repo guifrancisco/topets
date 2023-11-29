@@ -5,6 +5,7 @@ import com.example.topets.api.data.dto.DataRegisterReminder;
 import com.example.topets.api.data.dto.DataUpdateReminder;
 import com.example.topets.enums.ActivityType;
 import com.example.topets.enums.RecurrenceType;
+import com.example.topets.util.DateStringConverter;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.ParseException;
@@ -102,7 +103,7 @@ public class Reminder {
 
     public long getDateTimeInMillis() {
         try {
-            return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").parse(dateTime).getTime();
+            return DateStringConverter.getDateFrom(dateTime).getTime();
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

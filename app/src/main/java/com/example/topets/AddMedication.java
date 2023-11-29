@@ -22,6 +22,7 @@ import com.example.topets.enums.ActivityType;
 import com.example.topets.enums.RecurrenceType;
 import com.example.topets.fragments.DatePickerFragment;
 import com.example.topets.fragments.TimePickerFragment;
+import com.example.topets.util.DateStringConverter;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
@@ -95,7 +96,7 @@ public class AddMedication extends AppCompatActivity {
             dateCalendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE));
 
 
-            String dateTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'").format(dateCalendar.getTime());
+            String dateTime = DateStringConverter.getStringFrom(dateCalendar.getTime());
             Log.i(getClass().getSimpleName(), "using date time: " + dateTime);
 
             boolean periodic = true;

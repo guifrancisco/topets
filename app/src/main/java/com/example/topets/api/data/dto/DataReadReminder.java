@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.topets.enums.ActivityType;
 import com.example.topets.enums.RecurrenceType;
+import com.example.topets.util.DateStringConverter;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.ParseException;
@@ -52,7 +53,7 @@ public class DataReadReminder {
         try {
             Calendar c = Calendar.getInstance();
             c.clear();
-            c.setTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(dateTime));
+            c.setTime(DateStringConverter.getDateFrom(dateTime));
             return c;
         } catch (ParseException e) {
             Log.e(this.getClass().getSimpleName(), "Error while parsing dateTime string: " + dateTime);

@@ -3,6 +3,7 @@ package com.example.topets.model;
 import android.util.Log;
 
 import com.example.topets.enums.Sex;
+import com.example.topets.util.DateStringConverter;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.ParseException;
@@ -34,7 +35,7 @@ public class Pet {
         Log.i(this.getClass().getSimpleName(), "id is " + id);
         this.id = UUID.fromString(id);
         this.name = name;
-        this.birthDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'").parse(birthDate);
+        this.birthDate = DateStringConverter.getDateFrom(birthDate);
         this.species = species;
         this.race = race;
         this.sex = Sex.fromString(sex);
