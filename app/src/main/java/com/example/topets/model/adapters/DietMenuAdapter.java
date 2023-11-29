@@ -14,6 +14,9 @@ import com.example.topets.DietMenu;
 import com.example.topets.EditDiet;
 import com.example.topets.R;
 import com.example.topets.api.data.dto.DataReadDiet;
+import com.example.topets.api.data.dto.DataReadReminder;
+import com.example.topets.model.Reminder;
+import com.example.topets.system.IntentDataHelper;
 
 import java.util.List;
 
@@ -72,6 +75,10 @@ public class DietMenuAdapter extends RecyclerView.Adapter<DietMenuAdapter.Recycl
             intent.putExtra("dietType", diet.getType());
             intent.putExtra("dietDescription", diet.getDescription());
             intent.putExtra("position", dietList.indexOf(diet));
+
+            //putting reminder info on intent
+            DataReadReminder reminder = diet.getDataReadReminder();
+            IntentDataHelper.addReminderInfoToIntent(intent, new Reminder(reminder));
             editDietActivityLauncher.launch(intent);
         }
     }
