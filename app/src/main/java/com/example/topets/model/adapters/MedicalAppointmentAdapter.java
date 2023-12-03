@@ -14,6 +14,9 @@ import com.example.topets.EditAppointment;
 import com.example.topets.MedicalAppointmentMenu;
 import com.example.topets.R;
 import com.example.topets.api.data.dto.DataReadMedicalAppointment;
+import com.example.topets.api.data.dto.DataReadReminder;
+import com.example.topets.model.Reminder;
+import com.example.topets.system.IntentDataHelper;
 
 import java.util.List;
 
@@ -69,6 +72,13 @@ public class MedicalAppointmentAdapter extends RecyclerView.Adapter<MedicalAppoi
             intent.putExtra("appointmentDescription", appointment.getDescription());
             intent.putExtra("appointmentLocal", appointment.getLocal());
             intent.putExtra("position", appointmentList.indexOf(appointment));
+
+            //putting reminder info on intent
+            DataReadReminder reminder = appointment.getDataReadReminder();
+            if(reminder != null){
+                IntentDataHelper.addReminderInfoToIntent(intent, new Reminder(reminder));
+            }
+
             editAppointmentActivityLauncher.launch(intent);
         }
     }

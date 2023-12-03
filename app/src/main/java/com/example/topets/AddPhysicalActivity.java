@@ -16,12 +16,15 @@ import android.widget.Toast;
 
 import com.example.topets.api.Connection;
 import com.example.topets.api.data.dto.DataRegisterPhysicalActivity;
+import com.example.topets.api.data.dto.DataRegisterReminder;
 import com.example.topets.api.services.PhysicalActivityService;
 import com.example.topets.api.util.ResponseHandler;
 import com.example.topets.enums.ActivityType;
 import com.example.topets.enums.RecurrenceType;
 import com.example.topets.fragments.DatePickerFragment;
 import com.example.topets.fragments.TimePickerFragment;
+import com.example.topets.model.Reminder;
+import com.example.topets.notification.NotificationScheduler;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.net.HttpURLConnection;
@@ -74,7 +77,7 @@ public class AddPhysicalActivity extends AppCompatActivity {
         PhysicalActivityService service = Connection.getPhyisicalActivityService();
         Call<ResponseBody> call = service.registerPhysicalActivity(dto);
         Log.i(this.getPhysicalActivity().toString(), "Registering PA: " + dto);
-        call.enqueue(new PhysicalActivityRegistrationCallback(this));
+        call.enqueue(new PhysicalActivityRegistrationCallback(this, dto));
     }
 
     private DataRegisterPhysicalActivity getPhysicalActivity() {
@@ -168,8 +171,10 @@ public class AddPhysicalActivity extends AppCompatActivity {
 
     private class PhysicalActivityRegistrationCallback implements Callback<ResponseBody> {
         AddPhysicalActivity context;
-        public PhysicalActivityRegistrationCallback(AddPhysicalActivity addPhysicalActivity) {
+        DataRegisterPhysicalActivity registeredPhysicalActivity;
+        public PhysicalActivityRegistrationCallback(AddPhysicalActivity addPhysicalActivity, DataRegisterPhysicalActivity dto) {
             context = addPhysicalActivity;
+            this.registeredPhysicalActivity = dto;
         }
 
         @Override
@@ -177,6 +182,13 @@ public class AddPhysicalActivity extends AppCompatActivity {
             int responseCode = response.code();
             if(responseCode == HttpURLConnection.HTTP_CREATED){
                 Toast.makeText(context, "Atividade física cadastrada com sucesso", Toast.LENGTH_LONG).show();
+
+                DataRegisterReminder reminder = registeredPhysicalActivity.getDataRegisterReminder();
+                if(reminder != null){
+                    //a reminder was registered, send it to the scheduler
+                    NotificationScheduler.scheduleNotificationForReminder(context, new Reminder(reminder, registeredPhysicalActivity.getName()));
+                }
+
                 finish();
             } else if (!response.isSuccessful()) {
                 ResponseHandler.handleFailure(response);

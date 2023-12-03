@@ -25,6 +25,13 @@ public class DataRegisterMedication {
         this.dataRegisterReminder = reminder;
     }
 
+    public DataRegisterReminder getDataRegisterReminder() {
+        return dataRegisterReminder;
+    }
+    public String getName(){
+        return dataRegisterActivity.getName();
+    }
+
     private class DataRegisterMedicationDetails {
         private String description;
 

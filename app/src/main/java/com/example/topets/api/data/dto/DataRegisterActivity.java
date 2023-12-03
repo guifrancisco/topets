@@ -11,6 +11,10 @@ public class DataRegisterActivity {
         this.petId = petId;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
         return "DataRegisterActivity{" +

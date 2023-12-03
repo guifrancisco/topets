@@ -10,6 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.topets.util.DateStringConverter;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -65,6 +69,15 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         }
     }
 
+    public void setDate(String s){
+
+        try {
+            setDate(DateStringConverter.getDateFrom(s));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
     public void setDate(Date date){
         Calendar c = Calendar.getInstance();

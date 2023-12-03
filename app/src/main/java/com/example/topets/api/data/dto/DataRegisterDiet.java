@@ -23,6 +23,13 @@ public class DataRegisterDiet {
         this.dataRegisterReminder = new DataRegisterReminder(dateTime, activityType, periodic, recurrenceType, reminderDescription);
     }
 
+    public DataRegisterReminder getDataRegisterReminder() {
+        return dataRegisterReminder;
+    }
+    public String getName(){
+        return dataRegisterActivity.getName();
+    }
+
     private class DataRegisterDietDetails {
         String type;
         String description;

@@ -14,6 +14,8 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.topets.MainActivity;
 import com.example.topets.R;
+import com.example.topets.enums.ActivityType;
+import com.example.topets.enums.RecurrenceType;
 import com.example.topets.model.Reminder;
 
 import java.util.Random;
@@ -21,17 +23,14 @@ import java.util.Random;
 public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        String reminderId = intent.getStringExtra("reminderId");
-        String reminderContent = intent.getStringExtra("reminderContent");
-        String activityName = intent.getStringExtra("activityName");
-        String petName = intent.getStringExtra("petName");
-
+        String reminderName = intent.getStringExtra("reminderName");
+        String reminderDescription = intent.getStringExtra("reminderDescription");
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, MainActivity.MAIN_NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.baseline_notification_important_24)
-                .setContentTitle(String.format("LEMBRETE: %s do seu pet '%s'", activityName, petName))
-                .setContentText(reminderContent)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(reminderContent))
+                .setContentTitle(String.format("LEMBRETE: %s", reminderName))
+                .setContentText(reminderDescription)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(reminderDescription))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 

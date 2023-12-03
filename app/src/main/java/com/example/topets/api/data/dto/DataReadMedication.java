@@ -1,11 +1,19 @@
 package com.example.topets.api.data.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Objects;
 
 public class DataReadMedication {
     String id;
     String name;
     String description;
+    @SerializedName("reminder")
+    private DataReadReminder dataReadReminder;
+
+    public DataReadReminder getDataReadReminder() {
+        return dataReadReminder;
+    }
 
     public DataReadMedication(String id, String name, String description) {
         this.id = id;

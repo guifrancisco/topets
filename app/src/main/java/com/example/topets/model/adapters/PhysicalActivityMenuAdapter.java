@@ -14,6 +14,9 @@ import com.example.topets.EditPhysicalActivity;
 import com.example.topets.PhysicalActivityMenu;
 import com.example.topets.R;
 import com.example.topets.api.data.dto.DataReadPhysicalActivity;
+import com.example.topets.api.data.dto.DataReadReminder;
+import com.example.topets.model.Reminder;
+import com.example.topets.system.IntentDataHelper;
 
 import java.util.List;
 
@@ -69,6 +72,13 @@ public class PhysicalActivityMenuAdapter extends RecyclerView.Adapter<PhysicalAc
             intent.putExtra("physicalActivityName", physicalActivity.getName());
             intent.putExtra("physicalActivityLocation", physicalActivity.getLocal());
             intent.putExtra("position", physicalActivityList.indexOf(physicalActivity));
+
+            //putting reminder info on intent
+            DataReadReminder reminder = physicalActivity.getDataReadReminder();
+            if(reminder != null){
+                IntentDataHelper.addReminderInfoToIntent(intent, new Reminder(reminder));
+            }
+
             editPhysicalActivityLauncher.launch(intent);
         }
     }

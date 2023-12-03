@@ -20,6 +20,7 @@ public class Menu extends AppCompatActivity {
     CardView petProfileButton;
     CardView medicationButton;
     CardView dietButton;
+    CardView reminderButton;
 
     CardView physicalActivityButton;
 
@@ -37,6 +38,7 @@ public class Menu extends AppCompatActivity {
         petProfileButton = findViewById(R.id.petProfileButton);
         medicationButton = findViewById(R.id.medicationButton);
         dietButton = findViewById(R.id.dietButton);
+        reminderButton = findViewById(R.id.reminderButton);
 
         physicalActivityButton = findViewById(R.id.paButton);
 
@@ -59,10 +61,21 @@ public class Menu extends AppCompatActivity {
         preparePetsMenuButton();
         prepareMedicationButton();
         prepareDietButton();
-
+        prepareReminderButton();
         preparePhysicalActivityButton();
         prepareAppointmentButton();
     }
+
+    private void prepareReminderButton() {
+        reminderButton.setOnClickListener(v -> navigateToReminderMenuScreen());
+    }
+
+    private void navigateToReminderMenuScreen() {
+        Intent intent = new Intent(this, ReminderMenu.class);
+        intent.putExtra("petId", petId);
+        startActivity(intent);
+    }
+
 
     private void preparePhysicalActivityButton() {
         physicalActivityButton.setOnClickListener(v -> navigateToPhysicalActivityMenuScreen());

@@ -16,12 +16,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.topets.api.Connection;
 import com.example.topets.api.data.dto.DataRegisterAppointment;
+import com.example.topets.api.data.dto.DataRegisterReminder;
 import com.example.topets.api.services.AppointmentService;
 import com.example.topets.api.util.ResponseHandler;
 import com.example.topets.enums.ActivityType;
 import com.example.topets.enums.RecurrenceType;
 import com.example.topets.fragments.DatePickerFragment;
 import com.example.topets.fragments.TimePickerFragment;
+import com.example.topets.model.Reminder;
+import com.example.topets.notification.NotificationScheduler;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.net.HttpURLConnection;
@@ -97,7 +100,7 @@ public class AddAppointment extends AppCompatActivity {
         AppointmentService appointmentService = Connection.getAppointmentService();
         Call<ResponseBody> call = appointmentService.registerAppointment(dataRegisterAppointment);
         Log.i(this.getClass().getSimpleName(), "Registering appointment:  " + dataRegisterAppointment);
-        call.enqueue(new AppointmentRegistrationCallback(this));
+        call.enqueue(new AppointmentRegistrationCallback(this, dataRegisterAppointment));
     }
 
     private DataRegisterAppointment getAppointment() {
@@ -192,8 +195,10 @@ public class AddAppointment extends AppCompatActivity {
 
     private class AppointmentRegistrationCallback implements Callback<ResponseBody> {
         AddAppointment context;
-        public AppointmentRegistrationCallback(AddAppointment addAppointment) {
+        DataRegisterAppointment registeredAppointment;
+        public AppointmentRegistrationCallback(AddAppointment addAppointment, DataRegisterAppointment appointment) {
             context = addAppointment;
+            this.registeredAppointment = appointment;
         }
 
         @Override
@@ -201,6 +206,13 @@ public class AddAppointment extends AppCompatActivity {
             int responseCode = response.code();
             if(responseCode == HttpURLConnection.HTTP_CREATED){
                 Toast.makeText(context, "Consulta cadastrada com sucesso", Toast.LENGTH_LONG).show();
+
+                DataRegisterReminder reminder = registeredAppointment.getDataRegisterReminder();
+                if(reminder != null){
+                    //a reminder was registered, send it to the scheduler
+                    NotificationScheduler.scheduleNotificationForReminder(context, new Reminder(reminder, registeredAppointment.getName()));
+                }
+
                 finish();
             } else if (!response.isSuccessful()) {
                 ResponseHandler.handleFailure(response);

@@ -5,6 +5,7 @@ import com.example.topets.api.services.DeviceService;
 import com.example.topets.api.services.DietService;
 import com.example.topets.api.services.MedicationService;
 import com.example.topets.api.services.PetService;
+import com.example.topets.api.services.ReminderService;
 import com.example.topets.api.services.PhysicalActivityService;
 
 import retrofit2.Retrofit;
@@ -47,6 +48,14 @@ public class Connection {
                 .create(DietService.class);
     }
 
+    public static ReminderService getReminderService(){
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ReminderService.class);
+    }
+    
 
     public static PhysicalActivityService getPhyisicalActivityService(){
         return new Retrofit.Builder()

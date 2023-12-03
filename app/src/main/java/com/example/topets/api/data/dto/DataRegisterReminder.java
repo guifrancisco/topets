@@ -2,6 +2,7 @@ package com.example.topets.api.data.dto;
 
 import com.example.topets.enums.ActivityType;
 import com.example.topets.enums.RecurrenceType;
+import com.example.topets.util.DateStringConverter;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.SimpleDateFormat;
@@ -25,11 +26,31 @@ public class DataRegisterReminder {
     }
 
     public DataRegisterReminder(Calendar dateTime, ActivityType activityType, boolean periodic, RecurrenceType recurrenceType, String reminderDescription) {
-        this.dateTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'").format(dateTime.getTime());
+        this.dateTime = DateStringConverter.getStringFrom(dateTime.getTime());
         this.activityType = activityType;
         this.periodic = periodic;
         this.recurrenceType = recurrenceType;
         this.description = reminderDescription;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public ActivityType getActivityType() {
+        return activityType;
+    }
+
+    public boolean isPeriodic() {
+        return periodic;
+    }
+
+    public RecurrenceType getRecurrenceType() {
+        return recurrenceType;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override
